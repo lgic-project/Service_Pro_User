@@ -4,6 +4,8 @@ import 'package:service_pro_user/Provider/api_provider.dart';
 import 'package:service_pro_user/UI/login_signup/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -22,6 +24,13 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Login'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/dashboard');
+              },
+              icon: Icon(Icons.close))
+        ],
       ),
       body: Stack(
         fit: StackFit.expand,

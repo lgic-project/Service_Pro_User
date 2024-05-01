@@ -30,7 +30,7 @@ class ApiProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         _token = data['data']['token'];
-        final role = data['data']['role'];
+        final role = data['data']['Role'];
         if (role == 'user') {
           await _storeToken(_token);
           _isLoggedIn = true;

@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/api_provider.dart';
+import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,12 +14,22 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to the home screen after 3 seconds
+    checkUserLoggedIn();
+  }
+
+  Future<void> checkUserLoggedIn() async {
+    final apiProvider = Provider.of<ApiProvider>(context, listen: false);
+    await apiProvider.autoLogin();
+
     Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+      if (apiProvider.isLoggedIn) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }
     });
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:service_provide_app/login_signup/login_screen.dart';
+import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 
 class ProfilePage extends StatelessWidget {
   @override

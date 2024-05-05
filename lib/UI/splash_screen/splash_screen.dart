@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
     ));
 
     return Scaffold(
-      backgroundColor: Color(0xFF4A90E2), // Blue color
+      backgroundColor: Theme.of(context).primaryColor, // Blue color
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

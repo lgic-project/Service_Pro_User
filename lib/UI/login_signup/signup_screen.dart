@@ -106,12 +106,7 @@ class SignUpPage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Navigator.pushReplacement(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => LoginScreen(onLoginSuccess: _getToken,),
-                        //   ),
-                        // );
+                        Navigator.pushReplacementNamed(context, '/login');
                       },
                       child: const Text('Login'),
                     ),

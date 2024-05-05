@@ -1,35 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/api_provider.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User Profile'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              // TODO: Implement change profile functionality
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
+    final apiProvider = Provider.of<ApiProvider>(context);
+
+    return SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               height: MediaQuery.of(context).size.height * 0.4,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [Colors.white, Colors.white],
                 ),
               ),
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
@@ -56,12 +49,12 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                    leading: Icon(Icons.key),
+                    leading: const Icon(Icons.key),
                     title: TextButton(
                       onPressed: () {
                         // TODO: Implement change password functionality
@@ -69,8 +62,8 @@ class ProfilePage extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Change Password'),
-                              content: Column(
+                              title: const Text('Change Password'),
+                              content: const Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   TextField(
@@ -96,28 +89,28 @@ class ProfilePage extends StatelessWidget {
                                     // TODO: Save password changes
                                     Navigator.pop(context);
                                   },
-                                  child: Text('Save'),
+                                  child: const Text('Save'),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     // TODO: Discard password changes
                                     Navigator.pop(context);
                                   },
-                                  child: Text('Discard'),
+                                  child: const Text('Discard'),
                                 ),
                               ],
                             );
                           },
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         'Change Password',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                   ),
                   ListTile(
-                    leading: Icon(Icons.logout),
+                    leading: const Icon(Icons.logout),
                     title: TextButton(
                       onPressed: () {
                         // Show confirmation dialog for logout
@@ -125,34 +118,30 @@ class ProfilePage extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Logout'),
-                              content: Text('Are you sure you want to logout?'),
+                              title: const Text('Logout'),
+                              content: const Text(
+                                  'Are you sure you want to logout?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context); // Close the dialog
                                   },
-                                  child: Text('No'),
+                                  child: const Text('No'),
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            LoginScreen(),
-                                      ),
-                                      (route) => false,
-                                    );
+                                    apiProvider.logOut();
+                                    Navigator.pushReplacementNamed(
+                                        context, '/login');
                                   },
-                                  child: Text('Yes'),
+                                  child: const Text('Yes'),
                                 ),
                               ],
                             );
                           },
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         'Logout',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),

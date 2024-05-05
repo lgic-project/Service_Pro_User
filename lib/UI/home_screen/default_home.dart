@@ -10,6 +10,8 @@ class DefaultHome extends StatefulWidget {
 class _DefaultHomeState extends State<DefaultHome> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SafeArea(
+      child: Container(),
+    );
   }
 }

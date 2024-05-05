@@ -52,6 +52,17 @@ class ApiProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> logOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    if (token.isNotEmpty) {
+      await prefs.remove('token');
+      _token = '';
+      _isLoggedIn = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> autoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token') ?? '';

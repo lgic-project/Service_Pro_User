@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/api_provider.dart';
 import 'package:service_pro_user/UI/home_screen/home_screen.dart';
+import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +35,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           '/': (context) => SplashScreen(),
           '/dashboard': (context) => HomeScreen(),
+          '/login': (context) => LoginScreen(),
         },
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/api_provider.dart';
-import 'package:service_pro_user/UI/home_screen/home_screen.dart';
+import 'package:service_pro_user/Provider/user_provider.dart';
+import 'package:service_pro_user/UI/home_screen/navigator_scaffold.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ApiProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
         initialRoute: '/',
         routes: {
           '/': (context) => SplashScreen(),
-          '/dashboard': (context) => HomeScreen(),
+          '/dashboard': (context) => NavigatorScaffold(),
           '/login': (context) => LoginScreen(),
         },
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/api_provider.dart';
+import 'package:service_pro_user/Provider/user_provider.dart';
 import 'package:service_pro_user/UI/login_signup/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final apiProvider = Provider.of<ApiProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -106,13 +106,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
-                      await apiProvider.login(
+                      await userProvider.login(
                         _emailController.text,
                         _passwordController.text,
                       );
 
                       // Check if the login was successful
-                      if (apiProvider.isLoggedIn) {
+                      if (userProvider.isLoggedIn) {
                         Navigator.pushReplacementNamed(context, '/dashboard');
                       } else {
                         showDialog(
@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       }
                     },
-                    child: apiProvider.isLoading
+                    child: userProvider.isLoading
                         ? const CircularProgressIndicator()
                         : const Text('LOGIN'),
                   ),

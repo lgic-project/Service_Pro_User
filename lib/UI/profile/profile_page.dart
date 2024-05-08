@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/api_provider.dart';
+import 'package:service_pro_user/Provider/user_provider.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final apiProvider = Provider.of<ApiProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -130,7 +130,7 @@ class ProfilePage extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    apiProvider.logOut();
+                                    userProvider.logOut();
                                     Navigator.pushReplacementNamed(
                                         context, '/login');
                                   },

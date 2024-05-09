@@ -13,8 +13,8 @@ class NavigatorScaffold extends StatefulWidget {
 
 class _NavigatorScaffoldState extends State<NavigatorScaffold> {
   int currentIndex = 0;
-  Color? unSelectedItemColor = Colors.pink[900];
-  Color selectedItemColor = Colors.white;
+  Color? unSelectedItemColor = Colors.white;
+  Color? selectedItemColor = Colors.pink[900];
   late Widget currentBody;
 
   @override
@@ -37,7 +37,6 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
     }
     return SafeArea(
         child: Scaffold(
-      // backgroundColor: Colors.black,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: ClipRRect(
@@ -56,10 +55,13 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
       bottomNavigationBar: Stack(
         clipBehavior: Clip.none,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+          Container(
+            color: Colors.transparent,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(40),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
               child: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: Theme.of(context).primaryColor,

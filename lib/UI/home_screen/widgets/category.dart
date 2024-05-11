@@ -1,11 +1,10 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Models/category_model.dart';
 import 'package:service_pro_user/Provider/category_provider.dart';
+import 'package:service_pro_user/UI/home_screen/widgets/service.dart';
 
 class Category extends StatefulWidget {
   const Category({super.key});
@@ -15,11 +14,20 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
+  late Future<List<CategoryModel>> futureCategories;
+
+  @override
+  void initState() {
+    super.initState();
+    final categoryProvider =
+        Provider.of<CategoryProvider>(context, listen: false);
+    futureCategories = categoryProvider.getCategories();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<CategoryProvider>(context);
     return FutureBuilder<List<CategoryModel>>(
-        future: categoryProvider.getCategories(),
+        future: futureCategories,
         builder: (context, snapShot) {
           if (snapShot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -65,19 +73,34 @@ class _CategoryState extends State<Category> {
                                 crossAxisCount: 2),
                         itemBuilder: (context, index) {
                           final categories = categoryData[index];
-                          String image = categories.image.toString() ?? '';
+                          String image = categories.image.toString();
                           image = image.replaceFirst('localhost', '10.0.2.2');
                           return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Service(category: categories),
+                                ),
+                              );
+                            },
                             child: Column(
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(2),
                                   child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: Image.network(image)),
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: CachedNetworkImage(
+                                        imageUrl: image,
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error)),
+                                  ),
                                 ),
                                 Text(
-                                  categories.name.toString() ?? '',
+                                  categories.name.toString(),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),

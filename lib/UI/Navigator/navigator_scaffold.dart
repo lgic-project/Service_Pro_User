@@ -14,7 +14,7 @@ class NavigatorScaffold extends StatefulWidget {
 class _NavigatorScaffoldState extends State<NavigatorScaffold> {
   int currentIndex = 0;
   Color? unSelectedItemColor = Colors.white;
-  Color? selectedItemColor = Colors.pink[900];
+  Color? selectedItemColor = Color(0xFF191645);
   late Widget currentBody;
 
   @override
@@ -37,6 +37,7 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
     }
     return SafeArea(
         child: Scaffold(
+      extendBody: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: ClipRRect(
@@ -52,67 +53,63 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
         ),
       ),
       body: currentBody,
-      bottomNavigationBar: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            color: Colors.transparent,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: ClipRRect(
+          // borderRadius: BorderRadius.only(
+          //   topLeft: Radius.circular(40),
+          //   topRight: Radius.circular(40),
+          // ),
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Theme.of(context).primaryColor,
+            items: [
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/icons/home.png',
+                  height: 30,
+                  color: currentIndex == 0
+                      ? selectedItemColor
+                      : unSelectedItemColor,
+                ),
+                label: 'Home',
               ),
-              child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: Theme.of(context).primaryColor,
-                items: [
-                  BottomNavigationBarItem(
-                    icon: Image.asset(
-                      'assets/icons/home.png',
-                      height: 30,
-                      color: currentIndex == 0
-                          ? selectedItemColor
-                          : unSelectedItemColor,
-                    ),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Image.asset('assets/icons/chat.png',
-                        height: 30,
-                        color: currentIndex == 1
-                            ? selectedItemColor
-                            : unSelectedItemColor),
-                    label: 'Chat',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Image.asset('assets/icons/booking.png',
-                        height: 30,
-                        color: currentIndex == 2
-                            ? selectedItemColor
-                            : unSelectedItemColor),
-                    label: 'Booking',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Image.asset('assets/icons/profile.png',
-                        height: 30,
-                        color: currentIndex == 3
-                            ? selectedItemColor
-                            : unSelectedItemColor),
-                    label: 'Profile',
-                  ),
-                ],
-                currentIndex: currentIndex,
-                selectedItemColor: selectedItemColor,
-                unselectedItemColor: unSelectedItemColor,
-                onTap: (index) {
-                  setState(() {
-                    currentIndex = index;
-                  });
-                },
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/icons/chat.png',
+                    height: 30,
+                    color: currentIndex == 1
+                        ? selectedItemColor
+                        : unSelectedItemColor),
+                label: 'Chat',
               ),
-            ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/icons/booking.png',
+                    height: 30,
+                    color: currentIndex == 2
+                        ? selectedItemColor
+                        : unSelectedItemColor),
+                label: 'Booking',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/icons/profile.png',
+                    height: 30,
+                    color: currentIndex == 3
+                        ? selectedItemColor
+                        : unSelectedItemColor),
+                label: 'Profile',
+              ),
+            ],
+            currentIndex: currentIndex,
+            selectedItemColor: selectedItemColor,
+            unselectedItemColor: unSelectedItemColor,
+            onTap: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
           ),
-        ],
+        ),
       ),
     ));
   }

@@ -61,7 +61,7 @@ class _ImageSliderState extends State<ImageSlider> {
                       position: _currentIndex.toDouble().toInt(),
                       decorator: const DotsDecorator(
                         color: Colors.grey,
-                        activeColor: Colors.blue,
+                        activeColor: Color(0xFF43cbac),
                       ),
                     ),
                   )

@@ -71,7 +71,7 @@ class _ChatState extends State<Chat> {
                               ],
                             );
                           } else {
-                            return const SizedBox();
+                            return const SizedBox.shrink();
                           }
                         });
                   }),

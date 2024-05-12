@@ -34,10 +34,16 @@ class _ServiceState extends State<Service> {
               : ListView.builder(
                   itemCount: services.length,
                   itemBuilder: (context, index) {
+                    final serviceData = services[index];
                     return ListTile(
-                      title: Text(services[index]['Name']),
-                      subtitle: Text(services[index]['Description']),
-                      trailing: Text('Price: ${services[index]['Price']}'),
+                      title: Text(serviceData['Name']),
+                      subtitle: Text(serviceData['Description']),
+                      trailing: Column(
+                        children: [
+                          Text('Price: ${serviceData['Price']}'),
+                          Text('Duration: ${serviceData['Duration']}')
+                        ],
+                      ),
                     );
                   },
                 ),

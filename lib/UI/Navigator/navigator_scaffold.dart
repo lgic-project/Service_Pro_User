@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_pro_user/UI/booking/booking.dart';
-import 'package:service_pro_user/UI/chat_screen/chat_screen.dart';
+import 'package:service_pro_user/UI/chat/chat_list.dart';
 import 'package:service_pro_user/UI/home_screen/home_screen.dart';
 import 'package:service_pro_user/UI/profile/profile_page.dart';
 
@@ -24,10 +24,6 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
         currentBody = HomeScreen();
 
         break;
-      case 1:
-        currentBody = Chat();
-
-        break;
       case 2:
         currentBody = Booking();
         break;
@@ -35,8 +31,7 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
         currentBody = ProfilePage();
         break;
     }
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       extendBody: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
@@ -107,10 +102,18 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
               setState(() {
                 currentIndex = index;
               });
+              if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Chat(),
+                  ),
+                );
+              }
             },
           ),
         ),
       ),
-    ));
+    );
   }
 }

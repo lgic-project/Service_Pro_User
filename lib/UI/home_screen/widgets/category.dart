@@ -14,106 +14,93 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
-  late Future<List<CategoryModel>> futureCategories;
-
   @override
   void initState() {
     super.initState();
-    final categoryProvider =
-        Provider.of<CategoryProvider>(context, listen: false);
-    futureCategories = categoryProvider.getCategories();
+    Provider.of<CategoryProvider>(context, listen: false).getCategories();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<CategoryModel>>(
-        future: futureCategories,
-        builder: (context, snapShot) {
-          if (snapShot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapShot.hasError) {
-            return Center(
-              child: Text('Error: ${snapShot.error}'),
-            );
-          } else {
-            final categoryData = snapShot.data;
-            if (categoryData == null) {
-              return Text('No categories found');
-            } else {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      child: const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Categories',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          ),
-                        ),
+    return Consumer<CategoryProvider>(
+      builder: (context, categoryProvider, child) {
+        if (categoryProvider.categories.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          final categoryData = categoryProvider.categories;
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  child: const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Categories',
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    MasonryGridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: categoryData.length,
-                        gridDelegate:
-                            const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2),
-                        itemBuilder: (context, index) {
-                          final categories = categoryData[index];
-                          String image = categories.image.toString();
-                          image = image.replaceFirst('localhost', '10.0.2.2');
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      Service(category: categories),
-                                ),
-                              );
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(2),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: CachedNetworkImage(
-                                        imageUrl: image,
-                                        placeholder: (context, url) =>
-                                            CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error)),
-                                  ),
-                                ),
-                                Text(
-                                  categories.name.toString(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                MasonryGridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: categoryData.length,
+                    gridDelegate:
+                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                    itemBuilder: (context, index) {
+                      final categories = categoryData[index];
+                      String image = categories.image.toString();
+                      image = image.replaceFirst('localhost', '10.0.2.2');
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  Service(category: categories),
                             ),
                           );
-                        }),
-                  ],
-                ),
-              );
-            }
-          }
-        });
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: CachedNetworkImage(
+                                    imageUrl: image,
+                                    placeholder: (context, url) =>
+                                        CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error)),
+                              ),
+                            ),
+                            Text(
+                              categories.name.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+              ],
+            ),
+          );
+        }
+      },
+    );
   }
 }

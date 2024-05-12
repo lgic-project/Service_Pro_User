@@ -16,7 +16,10 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: SingleChildScrollView(
         child: Column(
-          children: <Widget>[ImageSlider(), Category()],
+          children: <Widget>[
+            ImageSlider(),
+            Category(),
+          ],
         ),
       ),
     );

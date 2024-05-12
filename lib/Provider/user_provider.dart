@@ -10,6 +10,7 @@ class UserProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   bool get isLoggedIn => _isLoggedIn;
+  String get token => _token;
 
   Future<void> login(String email, String password) async {
     _isLoading = true;
@@ -32,7 +33,7 @@ class UserProvider extends ChangeNotifier {
         _token = data['data']['token'];
         final role = data['data']['Role'];
         if (role == 'user') {
-          await _storeToken(_token);
+          await storeToken(_token);
           _isLoggedIn = true;
         } else if (role == 'provider') {
           print('Error: You are a provider');
@@ -70,7 +71,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _storeToken(String token) async {
+  Future<void> storeToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
   }

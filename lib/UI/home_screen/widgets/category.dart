@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Models/category_model.dart';
 import 'package:service_pro_user/Provider/category_provider.dart';
@@ -52,13 +53,15 @@ class _CategoryState extends State<Category> {
                 SizedBox(
                   height: 10,
                 ),
-                MasonryGridView.builder(
+                GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: categoryData.length,
                     gridDelegate:
-                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2),
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                    ),
                     itemBuilder: (context, index) {
                       final categories = categoryData[index];
                       String image = categories.image.toString();
@@ -75,16 +78,23 @@ class _CategoryState extends State<Category> {
                         },
                         child: Column(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: CachedNetworkImage(
-                                    imageUrl: image,
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error)),
+                            Expanded(
+                              child: Container(
+                                width: 180,
+                                height: 150,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: FittedBox(
+                                    fit: BoxFit.fill,
+                                    child: CachedNetworkImage(
+                                        imageUrl: image,
+                                        placeholder: (context, url) => Lottie.asset(
+                                            'assets/lotties_animation/loading.json'),
+                                        errorWidget: (context, url, error) =>
+                                            Lottie.asset(
+                                                'assets/lotties_animation/error.json')),
+                                  ),
+                                ),
                               ),
                             ),
                             Text(

@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:service_pro_user/Models/category_model.dart';
 
 class Service extends StatefulWidget {
@@ -19,6 +21,7 @@ class _ServiceState extends State<Service> {
           title: Text(widget.category.name!),
         ),
         body: Container(
+          padding: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -30,18 +33,55 @@ class _ServiceState extends State<Service> {
             ),
           ),
           child: services == null
-              ? Center(child: Text('No services found'))
+              ? const Center(child: Text('No services found'))
               : ListView.builder(
                   itemCount: services.length,
                   itemBuilder: (context, index) {
                     final serviceData = services[index];
-                    return ListTile(
-                      title: Text(serviceData['Name']),
-                      subtitle: Text(serviceData['Description']),
-                      trailing: Column(
+                    String image = serviceData['Image'].toString();
+                    image = image.replaceFirst('localhost', '10.0.2.2');
+                    return Container(
+                      height: 200,
+                      child: Stack(
                         children: [
-                          Text('Price: ${serviceData['Price']}'),
-                          Text('Duration: ${serviceData['Duration']}')
+                          Positioned.fill(
+                            child: CachedNetworkImage(
+                                imageUrl: image,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Lottie.asset(
+                                      'assets/lotties_animation/loading.json',
+                                    ),
+                                errorWidget: (context, url, error) =>
+                                    Lottie.asset(
+                                        'assets/lotties_animation/error.json')),
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Colors.transparent, Colors.black54],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            left: 10,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  serviceData['Name'],
+                                  style: const TextStyle(
+                                      fontSize: 24, color: Colors.white),
+                                ),
+                                Text(
+                                  serviceData['Description'],
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     );

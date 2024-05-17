@@ -12,7 +12,7 @@ class ChatUserProvider with ChangeNotifier {
     final token = Provider.of<UserProvider>(context, listen: false).token;
     print('token : $token');
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/message/userList'), headers: {
+        .get(Uri.parse('http://20.52.185.247:8000/message/userList'), headers: {
       'Content-Type': 'application /json; charset=UTF-8',
       'Authorization': 'Bearer $token'
     });

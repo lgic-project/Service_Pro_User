@@ -39,7 +39,7 @@ class _ServiceState extends State<Service> {
                   itemBuilder: (context, index) {
                     final serviceData = services[index];
                     String image = serviceData['Image'].toString();
-                    image = image.replaceFirst('localhost', '10.0.2.2');
+                    image = image.replaceFirst('localhost', '20.52.185.247');
                     return Container(
                       height: 200,
                       child: Stack(

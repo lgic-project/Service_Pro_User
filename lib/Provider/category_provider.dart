@@ -10,7 +10,8 @@ class CategoryProvider extends ChangeNotifier {
   List<CategoryModel> get categories => _categories;
 
   Future<void> getCategories() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/category'));
+    final response =
+        await http.get(Uri.parse('http://20.52.185.247:8000/category'));
     if (response.statusCode == 200) {
       final categoryData = jsonDecode(response.body)['data'] as List;
       _categories = categoryData.map((e) => CategoryModel.fromJson(e)).toList();

@@ -22,6 +22,9 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
     switch (currentIndex) {
       case 0:
         currentBody = HomeScreen();
+        break;
+      case 1:
+        currentBody = Chat();
 
         break;
       case 2:
@@ -102,14 +105,6 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
               setState(() {
                 currentIndex = index;
               });
-              if (index == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Chat(),
-                  ),
-                );
-              }
             },
           ),
         ),

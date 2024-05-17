@@ -18,7 +18,7 @@ class UserProvider extends ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/user/login'),
+        Uri.parse('http://20.52.185.247:8000/user/login'),
         body: jsonEncode({
           'Email': email,
           'Password': password,

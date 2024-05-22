@@ -47,12 +47,14 @@ class _ChatState extends State<Chat> {
                     itemBuilder: (context, index) {
                       final chatUsers = chatUser.users[index];
                       if (chatUsers['Role'] == 'Provider') {
+                        final profile = (chatUsers['Image'] ??
+                                'https://play-lh.googleusercontent.com/jInS55DYPnTZq8GpylyLmK2L2cDmUoahVacfN_Js_TsOkBEoizKmAl5-p8iFeLiNjtE=w526-h296-rw')
+                            .toString();
                         return Column(
                           children: [
                             ListTile(
                               leading: CircleAvatar(
-                                backgroundImage: NetworkImage(''),
-                              ),
+                                  backgroundImage: NetworkImage(profile)),
                               title: Text(chatUsers['Name']),
                               trailing: const Text(
                                 '5m',

@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/user_provider.dart';
+import 'package:service_pro_user/Provider/login_logout_provider.dart';
+import 'package:service_pro_user/Provider/profile_provider.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProfileProvider>(context, listen: false).userProfile(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<LoginLogoutProvider>(context);
 
     return SafeArea(
       child: SingleChildScrollView(
-        child: Column(
+          child: Consumer<ProfileProvider>(builder: (context, profile, child) {
+        var user = profile.data;
+        final profilePic = (user['Image'] ??
+            'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048');
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
@@ -22,16 +38,16 @@ class ProfilePage extends StatelessWidget {
                   colors: [Colors.white, Colors.white],
                 ),
               ),
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage('assets/user.png'),
+                    backgroundImage: NetworkImage(profilePic.toString()),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'John Doe',
+                    user['Name'],
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -39,7 +55,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'john.doe@example.com',
+                    user['Email'],
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black,
@@ -151,8 +167,8 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
+        );
+      })),
     );
   }
 }

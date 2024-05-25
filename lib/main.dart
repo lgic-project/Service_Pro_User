@@ -7,7 +7,6 @@ import 'package:service_pro_user/Provider/profile_provider.dart';
 import 'package:service_pro_user/UI/Navigator/navigator_scaffold.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
-import 'package:service_pro_user/UI/home_screen/widgets/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -36,13 +35,13 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Color(0xFF43cbac),
+          primaryColor: const Color(0xFF43cbac),
         ),
         initialRoute: '/',
         routes: {
           '/': (context) => SplashScreen(),
-          '/dashboard': (context) => NavigatorScaffold(),
-          '/login': (context) => LoginScreen(),
+          '/dashboard': (context) => const NavigatorScaffold(),
+          '/login': (context) => const LoginScreen(),
         },
       ),
     );

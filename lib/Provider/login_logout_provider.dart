@@ -7,10 +7,12 @@ class LoginLogoutProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isLoggedIn = false;
   String _token = '';
+  String _userId = ' ';
 
   bool get isLoading => _isLoading;
   bool get isLoggedIn => _isLoggedIn;
   String get token => _token;
+  String get userId => _userId;
 
   Future<void> login(String email, String password) async {
     _isLoading = true;
@@ -31,6 +33,7 @@ class LoginLogoutProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         _token = data['data']['token'];
+        _userId = data['data']['_id'];
         final role = data['data']['Role'];
         if (role == 'user') {
           await storeToken(_token);

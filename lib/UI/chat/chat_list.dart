@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/chat_user_provider.dart';
 import 'package:service_pro_user/UI/chat/chat_screen.dart';
@@ -43,22 +44,31 @@ class _ChatState extends State<Chat> {
             Expanded(
               child: Consumer<ChatUserProvider>(
                   builder: (context, chatUser, child) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ChatScreen()));
-                  },
-                  child: ListView.builder(
-                      itemCount: chatUser.users.length,
-                      itemBuilder: (context, index) {
-                        final chatUsers = chatUser.users[index];
-                        if (chatUsers['Role'] == 'Provider') {
-                          final profile = (chatUsers['Image'] ??
-                                  'https://play-lh.googleusercontent.com/jInS55DYPnTZq8GpylyLmK2L2cDmUoahVacfN_Js_TsOkBEoizKmAl5-p8iFeLiNjtE=w526-h296-rw')
-                              .toString();
-                          return Column(
-                            children: [
-                              ListTile(
+                return ListView.builder(
+                    itemCount: chatUser.users.length,
+                    itemBuilder: (context, index) {
+                      final chatUsers = chatUser.users[index];
+                      if (chatUsers['Role'] == 'Provider') {
+                        final providerId = chatUsers['_id'];
+                        final providerName = chatUsers['Name'];
+                        final profile = (chatUsers['Image'] ??
+                                'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048')
+                            .toString();
+                        return Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                      providerId: providerId,
+                                      providerName: providerName,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ListTile(
                                 leading: CircleAvatar(
                                     backgroundImage: NetworkImage(profile)),
                                 title: Text(chatUsers['Name']),
@@ -67,16 +77,16 @@ class _ChatState extends State<Chat> {
                                   style: TextStyle(color: Color(0xFF191645)),
                                 ),
                               ),
-                              const Divider(
-                                color: Colors.white,
-                              ),
-                            ],
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      }),
-                );
+                            ),
+                            const Divider(
+                              color: Colors.white,
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    });
               }),
             ),
           ],

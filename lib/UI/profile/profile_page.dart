@@ -69,62 +69,62 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.key),
-                    title: TextButton(
-                      onPressed: () {
-                        // TODO: Implement change password functionality
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Change Password'),
-                              content: const Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      labelText: 'Current Password',
-                                    ),
-                                  ),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      labelText: 'New Password',
-                                    ),
-                                  ),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      labelText: 'Retype New Password',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    // TODO: Save password changes
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Save'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    // TODO: Discard password changes
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Discard'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: const Text(
-                        'Change Password',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ),
+                  // ListTile(
+                  //   leading: const Icon(Icons.key),
+                  //   title: TextButton(
+                  //     onPressed: () {
+                  //       // TODO: Implement change password functionality
+                  //       showDialog(
+                  //         context: context,
+                  //         builder: (BuildContext context) {
+                  //           return AlertDialog(
+                  //             title: const Text('Change Password'),
+                  //             content: const Column(
+                  //               mainAxisSize: MainAxisSize.min,
+                  //               children: [
+                  //                 TextField(
+                  //                   decoration: InputDecoration(
+                  //                     labelText: 'Current Password',
+                  //                   ),
+                  //                 ),
+                  //                 TextField(
+                  //                   decoration: InputDecoration(
+                  //                     labelText: 'New Password',
+                  //                   ),
+                  //                 ),
+                  //                 TextField(
+                  //                   decoration: InputDecoration(
+                  //                     labelText: 'Retype New Password',
+                  //                   ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //             actions: [
+                  //               TextButton(
+                  //                 onPressed: () {
+                  //                   // TODO: Save password changes
+                  //                   Navigator.pop(context);
+                  //                 },
+                  //                 child: const Text('Save'),
+                  //               ),
+                  //               TextButton(
+                  //                 onPressed: () {
+                  //                   // TODO: Discard password changes
+                  //                   Navigator.pop(context);
+                  //                 },
+                  //                 child: const Text('Discard'),
+                  //               ),
+                  //             ],
+                  //           );
+                  //         },
+                  //       );
+                  //     },
+                  //     child: const Text(
+                  //       'Change Password',
+                  //       style: TextStyle(fontSize: 20, color: Colors.black),
+                  //     ),
+                  //   ),
+                  // ),
                   ListTile(
                     leading: const Icon(Icons.logout),
                     title: TextButton(

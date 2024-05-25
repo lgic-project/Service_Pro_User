@@ -32,16 +32,24 @@ class LoginLogoutProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        _token = data['data']['token'];
-        _userId = data['data']['_id'];
-        final role = data['data']['Role'];
-        if (role == 'user') {
-          await storeToken(_token);
-          _isLoggedIn = true;
-        } else if (role == 'provider') {
-          print('Error: You are a provider');
+
+        if (data != null && data['data'] != null) {
+          final userData = data['data'];
+          _token = userData['token'];
+          _userId = userData['_id'] ?? ''; // Use _userId = '' if _id is null
+          final role = userData['Role'];
+
+          if (role == 'user') {
+            await storeToken(_token);
+            _isLoggedIn = true;
+          } else if (role == 'provider') {
+            print('Error: You are a provider');
+          } else {
+            print('Error: Invalid role');
+          }
         } else {
-          print('Error: Invalid role');
+          print('Error: Invalid response format');
+          _isLoggedIn = false;
         }
       } else {
         print('Error: ${response.body}');

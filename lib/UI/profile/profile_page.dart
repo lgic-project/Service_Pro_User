@@ -47,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    user['Name'],
+                    user['Name'] ?? 'User Name',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -55,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Text(
-                    user['Email'],
+                    user['Email'] ?? 'User Email',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black,

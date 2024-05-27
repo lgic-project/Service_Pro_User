@@ -1,19 +1,18 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/login_logout_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ChatScreen extends StatefulWidget {
   final String providerId;
   final String providerName;
 
-  const ChatScreen({
-    Key? key,
-    required this.providerId,
-    required this.providerName,
-  }) : super(key: key);
+  const ChatScreen(
+      {required this.providerId, required this.providerName, Key? key})
+      : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -21,83 +20,42 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   late IO.Socket socket;
-  final TextEditingController _messageController = TextEditingController();
-  List<Map<String, dynamic>> _messages = [];
+  List<Map<String, dynamic>> messages = [];
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    initSocket();
-    fetchMessages();
+    _connectSocket();
+    _fetchMessages();
   }
 
-  void initSocket() {
-    final token =
-        Provider.of<LoginLogoutProvider>(context, listen: false).token;
-    socket = IO.io('http://20.52.185.247:8000', <String, dynamic>{
-      'transports': ['websocket'],
-      'query': {'token': token},
-      'autoConnect': false,
-    });
+  void _connectSocket() async {
+    final token = await AuthService().getToken();
+    if (token != null) {
+      socket = IO.io('http://20.52.185.247:8000', <String, dynamic>{
+        'transports': ['websocket'],
+        'query': {'token': token},
+      });
 
-    socket.connect();
+      socket.on('connect', (_) {
+        print('Connected to socket server');
+      });
 
-    socket.onConnect((_) {
-      print('Connected');
-    });
-
-    socket.on('liveMessage', (data) {
-      setState(() {
-        _messages.add({
-          'sender': 'receiver',
-          'message': data['message'],
+      socket.on('message', (data) {
+        setState(() {
+          messages.add(data);
         });
       });
-    });
-  }
 
-  @override
-  void dispose() {
-    _messageController.dispose();
-    socket.disconnect();
-    super.dispose();
-  }
-
-  void sendMessage() async {
-    final message = _messageController.text.trim();
-    if (message.isNotEmpty) {
-      final token =
-          Provider.of<LoginLogoutProvider>(context, listen: false).token;
-      final response = await http.post(
-        Uri.parse('http://20.52.185.247:8000/message'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({
-          'receiver': widget.providerId,
-          'message': message,
-        }),
-      );
-
-      print('Send Message Response: ${response.statusCode} - ${response.body}');
-
-      if (response.statusCode == 200) {
-        _messageController.clear();
-        setState(() {
-          _messages.add({
-            'sender': 'sender',
-            'message': message,
-          });
-        });
-      } else {
-        print(
-            'Failed to send message: ${response.statusCode} - ${response.body}');
-      }
+      socket.on('disconnect', (_) => print('Disconnected from socket server'));
+    } else {
+      // Handle the case where the token is null
+      print('Token is null. Cannot connect to socket server.');
     }
   }
 
-  Future<void> fetchMessages() async {
+  Future<void> _fetchMessages() async {
     final token =
         Provider.of<LoginLogoutProvider>(context, listen: false).token;
     final response = await http.post(
@@ -112,10 +70,10 @@ class _ChatScreenState extends State<ChatScreen> {
     if (response.statusCode == 200) {
       print('Response: ${response.body}');
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      final messages = data['data'] as List<dynamic>;
+      var newMessages = data['data'] as List<dynamic>;
 
       setState(() {
-        _messages = messages.map<Map<String, dynamic>>((message) {
+        messages = newMessages.map<Map<String, dynamic>>((message) {
           return {
             'sender': message['status'] == 'sender' ? 'sender' : 'receiver',
             'message': message['message'],
@@ -125,6 +83,28 @@ class _ChatScreenState extends State<ChatScreen> {
     } else {
       throw Exception('Failed to load messages');
     }
+  }
+
+  void _sendMessage() {
+    if (_controller.text.isNotEmpty) {
+      final message = {
+        'receiverId': widget.providerId,
+        'message': _controller.text,
+        'sender': 'sender', // Customize this to reflect the actual sender ID
+        'createdAt': DateTime.now().toString(),
+      };
+      socket.emit('message', message);
+      setState(() {
+        messages.add(message);
+        _controller.clear();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    socket.disconnect();
+    super.dispose();
   }
 
   @override
@@ -137,9 +117,9 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _messages.length,
+              itemCount: messages.length,
               itemBuilder: (context, index) {
-                final message = _messages[index];
+                final message = messages[index];
                 final isSentByMe = message['sender'] == 'sender';
                 return Align(
                   alignment:
@@ -164,14 +144,14 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _messageController,
+                    controller: _controller,
                     decoration: const InputDecoration(
                       hintText: 'Type a message...',
                     ),
                   ),
                 ),
                 IconButton(
-                  onPressed: sendMessage,
+                  onPressed: _sendMessage,
                   icon: const Icon(Icons.send),
                 ),
               ],
@@ -180,5 +160,12 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+}
+
+class AuthService {
+  Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
   }
 }

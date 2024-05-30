@@ -4,6 +4,7 @@ import 'package:service_pro_user/Provider/category_provider.dart';
 import 'package:service_pro_user/Provider/chat_user_provider.dart';
 import 'package:service_pro_user/Provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/profile_provider.dart';
+import 'package:service_pro_user/Provider/signup_provider.dart';
 import 'package:service_pro_user/UI/Navigator/navigator_scaffold.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
@@ -31,6 +32,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => ChatUserProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => SignUpProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

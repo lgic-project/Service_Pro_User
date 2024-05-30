@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/login_logout_provider.dart';
 import 'package:service_pro_user/UI/booking/booking.dart';
 import 'package:service_pro_user/UI/chat/chat_list.dart';
 import 'package:service_pro_user/UI/home_screen/home_screen.dart';
@@ -19,6 +21,7 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<LoginLogoutProvider>(context);
     switch (currentIndex) {
       case 0:
         currentBody = HomeScreen();
@@ -44,10 +47,42 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
             bottomRight: Radius.circular(5),
           ),
           child: AppBar(
-            automaticallyImplyLeading: false,
-            title: const Text('Service Pro'),
-            backgroundColor: Theme.of(context).primaryColor,
-          ),
+              automaticallyImplyLeading: false,
+              title: const Text('Service Pro'),
+              backgroundColor: Theme.of(context).primaryColor,
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      // Show confirmation dialog for logout
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Logout'),
+                            content:
+                                const Text('Are you sure you want to logout?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                },
+                                child: const Text('No'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  userProvider.logOut();
+                                  Navigator.pushReplacementNamed(
+                                      context, '/login');
+                                },
+                                child: const Text('Yes'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    icon: Image.asset('assets/icons/logout.png'))
+              ]),
         ),
       ),
       body: currentBody,

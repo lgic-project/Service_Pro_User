@@ -4,7 +4,7 @@ import 'package:service_pro_user/Provider/login_logout_provider.dart';
 import 'package:service_pro_user/UI/login_signup/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -19,157 +19,172 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<LoginLogoutProvider>(context);
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double appBarHeight = AppBar().preferredSize.height;
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Login'),
+        title: const Text('SERVICE PRO'),
+        backgroundColor: Color(0xFF43cbac),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/dashboard');
-              },
-              icon: Icon(Icons.close))
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            },
+            icon: const Icon(Icons.close),
+          )
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/loginimage.jpg"),
-                fit: BoxFit.cover,
-              ),
-            ),
+      body: Container(
+        height: screenHeight - appBarHeight,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF43cbac), Color(0xFF006d77)],
           ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 80),
-                  const Text(
-                    'SERVICE PRO',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.amber,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 40,
-                      letterSpacing: 2,
-                    ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: 40),
+                Text(
+                  'LOGIN',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 30),
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'EMAIL ADDRESS',
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: Icon(Icons.email),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      labelText: 'PASSWORD',
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                        icon: _isPasswordVisible
-                            ? const Icon(Icons.visibility)
-                            : const Icon(Icons.visibility_off),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await userProvider.login(
-                        _emailController.text,
-                        _passwordController.text,
-                      );
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                buildInputField(_emailController, 'Email Address', Icons.email),
+                SizedBox(height: 10),
+                buildInputField(
+                  _passwordController,
+                  'Password',
+                  Icons.lock,
+                  isPasswordField: true,
+                  isPasswordVisible: _isPasswordVisible,
+                  onVisibilityToggle: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    await userProvider.login(
+                      _emailController.text,
+                      _passwordController.text,
+                    );
 
-                      // Check if the login was successful
-                      if (userProvider.isLoggedIn) {
-                        Navigator.pushReplacementNamed(context, '/dashboard');
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Error'),
-                              content: const Text('Invalid email or password'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                    child: userProvider.isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text('LOGIN'),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Don\'t have an account? ',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SignUpPage(),
-                            ),
+                    // Check if the login was successful
+                    if (userProvider.isLoggedIn) {
+                      Navigator.pushReplacementNamed(context, '/dashboard');
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Error'),
+                            content: const Text('Invalid email or password'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
                           );
                         },
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                      );
+                    }
+                  },
+                  child: userProvider.isLoading
+                      ? const CircularProgressIndicator()
+                      : Text(
+                    'LOGIN',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF43cbac),
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Don\'t have an account?',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignUpPage(),
                           ),
+                        );
+                      },
+                      child: Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Color(0xFF43cbac),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildInputField(
+      TextEditingController controller,
+      String labelText,
+      IconData icon, {
+        bool isPasswordField = false,
+        bool isPasswordVisible = false,
+        Function()? onVisibilityToggle,
+      }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPasswordField && !isPasswordVisible,
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: Icon(icon, color: Color(0xFF43cbac)),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
+        ),
+        suffixIcon: isPasswordField
+            ? IconButton(
+          onPressed: onVisibilityToggle,
+          icon: isPasswordVisible
+              ? Icon(Icons.visibility, color: Color(0xFF43cbac))
+              : Icon(Icons.visibility_off, color: Color(0xFF43cbac)),
+        )
+            : null,
       ),
     );
   }

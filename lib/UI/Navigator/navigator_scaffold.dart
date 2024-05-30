@@ -21,7 +21,9 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final token = Provider.of<LoginLogoutProvider>(context).token;
     final userProvider = Provider.of<LoginLogoutProvider>(context);
+
     switch (currentIndex) {
       case 0:
         currentBody = HomeScreen();
@@ -53,33 +55,54 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
               actions: [
                 IconButton(
                     onPressed: () {
-                      // Show confirmation dialog for logout
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Logout'),
-                            content:
-                                const Text('Are you sure you want to logout?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context); // Close the dialog
-                                },
-                                child: const Text('No'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  userProvider.logOut();
-                                  Navigator.pushReplacementNamed(
-                                      context, '/login');
-                                },
-                                child: const Text('Yes'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      print('Token value: $token');
+                      if (token != null) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Logout'),
+                              content: const Text(
+                                  'Are you sure you want to logout?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context); // Close the dialog
+                                  },
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    userProvider.logOut();
+                                    Navigator.pushReplacementNamed(
+                                        context, '/login');
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Login'),
+                                content: const Text(
+                                    'You need to login to access full feature of the app'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(
+                                          context, '/login');
+                                    },
+                                    child: const Text('Ok'),
+                                  ),
+                                ],
+                              );
+                            });
+                      }
                     },
                     icon: Image.asset('assets/icons/logout.png'))
               ]),

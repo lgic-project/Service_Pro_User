@@ -46,6 +46,7 @@ dependencies:
   dart_jsonwebtoken: ^2.14.0
   jwt_decoder: ^2.0.1
   expandable_text: ^2.3.0
+  image_picker: ^1.1.1
 
 dev_dependencies:
   flutter_test:

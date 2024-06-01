@@ -145,7 +145,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Success'),
-                            content: Text('Sign up successful!'),
+                            content: Text('Sign up successful!\nPlease check your email for verification'),
                             actions: [
                               TextButton(
                                 onPressed: () {

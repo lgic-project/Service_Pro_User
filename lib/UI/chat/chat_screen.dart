@@ -9,9 +9,10 @@ import 'dart:convert';
 class ChatScreen extends StatefulWidget {
   final String providerId;
   final String providerName;
+  final String providerImage;
 
   const ChatScreen(
-      {required this.providerId, required this.providerName, Key? key})
+      {required this.providerId, required this.providerName, required this.providerImage, Key? key})
       : super(key: key);
 
   @override
@@ -22,6 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late IO.Socket socket;
   List<Map<String, dynamic>> messages = [];
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -45,6 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
       socket.on('message', (data) {
         setState(() {
           messages.add(data);
+          _scrollToBottom();
         });
       });
 
@@ -79,6 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
             'message': message['message'],
           };
         }).toList();
+        _scrollToBottom();
       });
     } else {
       throw Exception('Failed to load messages');
@@ -90,49 +94,94 @@ class _ChatScreenState extends State<ChatScreen> {
       final message = {
         'receiverId': widget.providerId,
         'message': _controller.text,
-        'sender': 'sender', // Customize this to reflect the actual sender ID
+        'sender': 'sender',
         'createdAt': DateTime.now().toString(),
       };
       socket.emit('message', message);
       setState(() {
         messages.add(message);
         _controller.clear();
+        _scrollToBottom();
       });
     }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
     socket.disconnect();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.primaryColor;
+
     return Scaffold(
       appBar: AppBar(
+        
+        leading: Row(
+          children: [
+            Expanded(
+            child: IconButton(onPressed: (){
+              Navigator.pop(context);
+              },
+                icon: Icon(Icons.arrow_back_ios),
+            ),
+            ),
+
+            Expanded(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(widget.providerImage),
+              ),
+            ),
+
+          ],
+        ),
+        backgroundColor: primaryColor,
         title: Text(widget.providerName),
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
                 final isSentByMe = message['sender'] == 'sender';
                 return Align(
-                  alignment:
-                      isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment: isSentByMe
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: isSentByMe ? Colors.blue : Colors.grey[300],
+                      color: isSentByMe ? primaryColor : Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(message['message']),
+                    child: Text(
+                      message['message'],
+                      style: TextStyle(
+                        color: isSentByMe ? Colors.white : Colors.black,
+                      ),
+                    ),
                   ),
                 );
               },
@@ -140,19 +189,25 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
+            color: Colors.white,
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Type a message...',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
                 IconButton(
                   onPressed: _sendMessage,
-                  icon: const Icon(Icons.send),
+                  icon: Icon(
+                    Icons.send,
+                    color: primaryColor,
+                  ),
                 ),
               ],
             ),

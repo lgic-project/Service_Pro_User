@@ -19,6 +19,7 @@ class ChatUserProvider with ChangeNotifier {
     });
     if (response.statusCode == 200) {
       users = jsonDecode(response.body)['users'];
+
       notifyListeners();
     } else {
       print('Error: ${response.body}');

@@ -7,12 +7,14 @@ class LoginLogoutProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isLoggedIn = false;
   String _token = '';
-  String _userId = ' ';
+  String _userId = '';
+  bool _verified = false;
 
   bool get isLoading => _isLoading;
   bool get isLoggedIn => _isLoggedIn;
   String get token => _token;
   String get userId => _userId;
+  bool get verified => _verified;
 
   Future<void> login(String email, String password) async {
     _isLoading = true;
@@ -37,15 +39,14 @@ class LoginLogoutProvider extends ChangeNotifier {
           final userData = data['data'];
           _token = userData['token'];
           _userId = userData['_id'] ?? ''; // Use _userId = '' if _id is null
-          final role = userData['Role'];
+          _verified = userData['Verified'] == true; // Ensure boolean type
 
-          if (role == 'user') {
+          if (userData['Role'] == 'user') {
             await storeToken(_token);
             _isLoggedIn = true;
-          } else if (role == 'provider') {
-            print('Error: You are a provider');
           } else {
             print('Error: Invalid role');
+            _isLoggedIn = false;
           }
         } else {
           print('Error: Invalid response format');
@@ -66,13 +67,10 @@ class LoginLogoutProvider extends ChangeNotifier {
 
   Future<void> logOut() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token') ?? '';
-    if (token.isNotEmpty) {
-      await prefs.remove('token');
-      _token = '';
-      _isLoggedIn = false;
-      notifyListeners();
-    }
+    await prefs.remove('token');
+    _token = '';
+    _isLoggedIn = false;
+    notifyListeners();
   }
 
   Future<void> autoLogin() async {

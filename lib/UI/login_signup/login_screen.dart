@@ -86,7 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Check if the login was successful
                     if (userProvider.isLoggedIn) {
-                      Navigator.pushReplacementNamed(context, '/dashboard');
+                      if (userProvider.verified) {
+                        Navigator.pushReplacementNamed(context, '/dashboard');
+                      } else {
+                        userProvider.logOut();
+                        Navigator.pushReplacementNamed(context, '/verification');
+                      }
                     } else {
                       showDialog(
                         context: context,

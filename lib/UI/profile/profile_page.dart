@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/profile_provider.dart';
-import 'package:service_pro_user/UI/login_signup/login_screen.dart';
+import 'package:service_pro_user/UI/profile/account_information.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -31,9 +30,17 @@ class _ProfilePageState extends State<ProfilePage> {
           activeColor = Colors.red;
         }
         var user = profile.data;
-        final profilePic = (user['Image'] ??
-            'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048');
-
+        final name = user['Name'] ?? 'Invalid Name';
+        final email = user['Email'] ?? 'nomail@gmail.com';
+        final phone = user['Phone'] ?? '0000000000';
+        final address = user['Address'] ?? 'Invalid Address';
+        final profilePicList = user['Image'] ??
+            [
+              'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048'
+            ];
+        final profilePic = profilePicList is List && profilePicList.isNotEmpty
+            ? profilePicList[0]
+            : 'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048';
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -99,7 +106,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       trailing:
                           Icon(Icons.arrow_forward_ios, color: primaryColor),
                       onTap: () {
-                        // Navigate to account information page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AccountInformationPage(
+                                    name: name,
+                                    email: email,
+                                    phone: phone,
+                                    address: address,
+                                    profile: profilePic,
+                                  )),
+                        );
                       },
                     ),
                   ),

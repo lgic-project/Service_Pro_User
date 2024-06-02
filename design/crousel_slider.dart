@@ -1,4 +1,4 @@
-// import 'dart:ui';
+// import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 // import 'package:dots_indicator/dots_indicator.dart';
 // import 'package:flutter/material.dart';
@@ -40,19 +40,27 @@
 //                       return Padding(
 //                         padding: const EdgeInsets.symmetric(horizontal: 5),
 //                         child: ClipRRect(
-//                             borderRadius: BorderRadius.circular(10),
-//                             child: Image.network(sliderimages)),
+//                           borderRadius: BorderRadius.circular(10),
+//                           child: CachedNetworkImage(
+//                             imageUrl: sliderimages,
+//                             placeholder: (context, url) =>
+//                                 Center(child: CircularProgressIndicator()),
+//                             errorWidget: (context, url, error) =>
+//                                 Icon(Icons.error),
+//                           ),
+//                         ),
 //                       );
 //                     },
 //                     options: CarouselOptions(
-//                         viewportFraction: 0.8,
-//                         autoPlay: true,
-//                         height: 200,
-//                         onPageChanged: (index, reason) {
-//                           setState(() {
-//                             _currentIndex = index;
-//                           });
-//                         }),
+//                       viewportFraction: 0.8,
+//                       autoPlay: true,
+//                       height: 200,
+//                       onPageChanged: (index, reason) {
+//                         setState(() {
+//                           _currentIndex = index;
+//                         });
+//                       },
+//                     ),
 //                   ),
 //                   Positioned(
 //                     bottom: 5,
@@ -66,7 +74,7 @@
 //                         activeColor: Colors.blue,
 //                       ),
 //                     ),
-//                   )
+//                   ),
 //                 ],
 //               ),
 //             ),

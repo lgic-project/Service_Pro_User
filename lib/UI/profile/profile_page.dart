@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/profile_provider.dart';
+import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:service_pro_user/UI/profile/account_information.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
         var user = profile.data;
         final name = user['Name'] ?? 'Invalid Name';
         final email = user['Email'] ?? 'nomail@gmail.com';
-        final phone = user['Phone'] ?? '0000000000';
+        final phone = user['PhoneNo'].toString() ?? '0000000000';
         final address = user['Address'] ?? 'Invalid Address';
         final profilePicList = user['Image'] ??
             [

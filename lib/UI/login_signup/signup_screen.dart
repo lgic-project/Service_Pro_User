@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/signup_provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/signup_provider.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -34,17 +34,17 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _buildImageContainer() {
     return _image != null
         ? Container(
-      width: 150,
-      height: 150,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.grey[300],
-      ),
-      child: CircleAvatar(
-        radius: 75,
-        backgroundImage: FileImage(_image!),
-      ),
-    )
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey[300],
+            ),
+            child: CircleAvatar(
+              radius: 75,
+              backgroundImage: FileImage(_image!),
+            ),
+          )
         : Container();
   }
 
@@ -87,9 +87,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 20),
                 buildInputField(nameController, 'Name', Icons.person),
                 SizedBox(height: 10),
-                buildInputField(addressController, 'Address', Icons.location_on),
+                buildInputField(
+                    addressController, 'Address', Icons.location_on),
                 SizedBox(height: 10),
-                buildInputField(phoneNumberController, 'Phone Number', Icons.phone),
+                buildInputField(
+                    phoneNumberController, 'Phone Number', Icons.phone),
                 SizedBox(height: 10),
                 buildInputField(emailController, 'Email Address', Icons.email),
                 SizedBox(height: 10),
@@ -97,7 +99,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _pickImage,
-                  child: Text('Select Profile', style: TextStyle(color: Colors.white)),
+                  child: Text('Select Profile',
+                      style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF43cbac),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -124,13 +127,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         password.isNotEmpty) {
                       final imagePath = _image!.path;
                       context.read<SignUpProvider>().signUp(
-                        name,
-                        email,
-                        password,
-                        phoneNumber,
-                        address,
-                        imagePath,
-                      );
+                            name,
+                            email,
+                            password,
+                            phoneNumber,
+                            address,
+                            imagePath,
+                          );
 
                       // Clear all text fields
                       nameController.clear();
@@ -145,7 +148,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Success'),
-                            content: Text('Sign up successful!\nPlease check your email for verification'),
+                            content: Text(
+                                'Sign up successful!\nPlease check your email for verification'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -200,7 +204,8 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget buildInputField(TextEditingController controller, String labelText, IconData icon) {
+  Widget buildInputField(
+      TextEditingController controller, String labelText, IconData icon) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(

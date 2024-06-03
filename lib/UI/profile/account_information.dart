@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/profile_provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
+import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AccountInformationPage extends StatefulWidget {
   final String name;
@@ -36,14 +39,36 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
   void initState() {
     super.initState();
     _profileImage = widget.profile;
+    _nameController = TextEditingController(text: widget.name);
+    _emailController = TextEditingController(text: widget.email);
+    _phoneController = TextEditingController(text: widget.phone.toString());
+    _addressController = TextEditingController(text: widget.address);
+  }
+
+  Future<void> updateUserProfile(
+      String token, Map<String, dynamic> updatedData) async {
+    final response = await http.put(
+      Uri.parse('http://20.52.185.246/user/profile'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(updatedData),
+    );
+
+    if (response.statusCode == 200) {
+      print('User profile updated successfully.');
+    } else {
+      print(
+          'Failed to update user profile. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to update user profile.');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _nameController = TextEditingController();
-    _emailController = TextEditingController();
-    _phoneController = TextEditingController();
-    _addressController = TextEditingController();
+    final token = Provider.of<LoginLogoutProvider>(context).token;
 
     return Container(
       decoration: BoxDecoration(
@@ -126,7 +151,7 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
                 _buildEditableField(
                   leadingIcon: Icons.phone,
                   controller: _phoneController,
-                  title: widget.phone,
+                  title: widget.phone.toString(),
                 ),
                 _buildEditableField(
                   leadingIcon: Icons.home,
@@ -145,7 +170,15 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
                     ),
                   ),
                   onPressed: () {
-                    // Save the changes
+                    Map<String, dynamic> updatedData = {
+                      'Name': _nameController.text,
+                      'Email': _emailController.text,
+                      'PhoneNo': _phoneController.text,
+                      'Address': _addressController.text,
+                      // Add other fields if necessary
+                    };
+                    print('Updated Data: $updatedData');
+                    updateUserProfile(token, updatedData);
                   },
                   child: const Text('Save', style: TextStyle(fontSize: 16)),
                 ),

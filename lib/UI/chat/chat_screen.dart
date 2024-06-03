@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/login_logout_provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +12,10 @@ class ChatScreen extends StatefulWidget {
   final String providerImage;
 
   const ChatScreen(
-      {required this.providerId, required this.providerName, required this.providerImage, Key? key})
+      {required this.providerId,
+      required this.providerName,
+      required this.providerImage,
+      Key? key})
       : super(key: key);
 
   @override
@@ -132,24 +135,22 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        
         leading: Row(
           children: [
             Expanded(
-            child: IconButton(onPressed: (){
-              Navigator.pop(context);
-              },
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 icon: Icon(Icons.arrow_back_ios),
+              ),
             ),
-            ),
-
             Expanded(
               child: CircleAvatar(
                 radius: 50,
                 backgroundImage: NetworkImage(widget.providerImage),
               ),
             ),
-
           ],
         ),
         backgroundColor: primaryColor,
@@ -165,13 +166,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 final message = messages[index];
                 final isSentByMe = message['sender'] == 'sender';
                 return Align(
-                  alignment: isSentByMe
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                  alignment:
+                      isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: isSentByMe ? primaryColor : Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),

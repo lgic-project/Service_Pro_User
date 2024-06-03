@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:service_pro_user/UI/service_providers/service_provider_details.dart';
 
 class ServiceProviders extends StatefulWidget {
   final dynamic serviceData;
@@ -71,6 +72,24 @@ class _ServiceProvidersState extends State<ServiceProviders> {
               : ListView.builder(
                   itemCount: serviceProviders.length,
                   itemBuilder: (context, index) {
+                    final providerId =
+                        serviceProviders[index]['_id'].toString();
+                    final providerName =
+                        serviceProviders[index]['Name'].toString();
+                    final providerAddress =
+                        serviceProviders[index]['Address'].toString();
+                    final providerPhone =
+                        serviceProviders[index]['PhoneNo'].toString();
+                    final providerEmail =
+                        serviceProviders[index]['Email'].toString();
+                    final providerServiceTotal = serviceProviders[index]
+                            ['ServiceAnalytics']['TotalServices']
+                        .toString();
+                    final providerServiceCompleted = serviceProviders[index]
+                            ['ServiceAnalytics']['CompletedServices']
+                        .toString();
+                    final providerProfile =
+                        serviceProviders[index]['Image'].toString();
                     return Padding(
                       padding: EdgeInsets.all(12.0),
                       child: Card(
@@ -82,7 +101,22 @@ class _ServiceProvidersState extends State<ServiceProviders> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
                           onTap: () {
-                            // Add onTap functionality
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ServiceProviderDetails(
+                                  providerId: providerId,
+                                  providerName: providerName,
+                                  providerAddress: providerAddress,
+                                  providerPhone: providerPhone,
+                                  providerEmail: providerEmail,
+                                  providerServiceTotal: providerServiceTotal,
+                                  providerServiceCompleted:
+                                      providerServiceCompleted,
+                                  providerProfile: providerProfile,
+                                ),
+                              ),
+                            );
                           },
                           child: Padding(
                             padding: EdgeInsets.all(16),

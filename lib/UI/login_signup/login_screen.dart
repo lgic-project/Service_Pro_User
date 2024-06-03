@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/login_logout_provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:service_pro_user/UI/login_signup/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -90,7 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.pushReplacementNamed(context, '/dashboard');
                       } else {
                         userProvider.logOut();
-                        Navigator.pushReplacementNamed(context, '/verification');
+                        Navigator.pushReplacementNamed(
+                            context, '/verification');
                       }
                     } else {
                       showDialog(
@@ -115,13 +116,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: userProvider.isLoading
                       ? const CircularProgressIndicator()
                       : Text(
-                    'LOGIN',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                          'LOGIN',
+                          style: TextStyle(color: Colors.white),
+                        ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF43cbac),
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -163,13 +163,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildInputField(
-      TextEditingController controller,
-      String labelText,
-      IconData icon, {
-        bool isPasswordField = false,
-        bool isPasswordVisible = false,
-        Function()? onVisibilityToggle,
-      }) {
+    TextEditingController controller,
+    String labelText,
+    IconData icon, {
+    bool isPasswordField = false,
+    bool isPasswordVisible = false,
+    Function()? onVisibilityToggle,
+  }) {
     return TextFormField(
       controller: controller,
       obscureText: isPasswordField && !isPasswordVisible,
@@ -184,11 +184,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         suffixIcon: isPasswordField
             ? IconButton(
-          onPressed: onVisibilityToggle,
-          icon: isPasswordVisible
-              ? Icon(Icons.visibility, color: Color(0xFF43cbac))
-              : Icon(Icons.visibility_off, color: Color(0xFF43cbac)),
-        )
+                onPressed: onVisibilityToggle,
+                icon: isPasswordVisible
+                    ? Icon(Icons.visibility, color: Color(0xFF43cbac))
+                    : Icon(Icons.visibility_off, color: Color(0xFF43cbac)),
+              )
             : null,
       ),
     );

@@ -89,7 +89,9 @@ class _ServiceProvidersState extends State<ServiceProviders> {
                             ['ServiceAnalytics']['CompletedServices']
                         .toString();
                     final providerProfile =
-                        serviceProviders[index]['Image'][0].toString();
+                        serviceProviders[index]['Image'] != null
+                            ? serviceProviders[index]['Image'][0].toString()
+                            : null;
                     print('providerProfile: $providerProfile');
                     return Padding(
                       padding: EdgeInsets.all(12.0),
@@ -125,10 +127,9 @@ class _ServiceProvidersState extends State<ServiceProviders> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                    serviceProviders[index]['Image'][0]
-                                        .toString(),
-                                  ),
+                                  backgroundImage: providerProfile != null
+                                      ? NetworkImage(providerProfile)
+                                      : null, // or some default image
                                   radius: 40,
                                 ),
                                 SizedBox(width: 20),

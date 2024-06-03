@@ -58,6 +58,7 @@ class _ServiceState extends State<Service> {
                     const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   final serviceData = services[index];
+                  print('serviceData: $serviceData');
                   String image = serviceData['Image'].toString();
                   image = image.replaceFirst('localhost', '20.52.185.247');
                   return Card(

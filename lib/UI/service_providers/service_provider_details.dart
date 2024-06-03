@@ -56,7 +56,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                     ),
                   ),
                   child: ListView.builder(
-                    itemCount: widget.providerProfile.length,
+                    itemCount: widget.providerProfile?.length ?? 0,
                     itemBuilder: (context, index) {
                       return Image.network(widget.providerProfile);
                     },
@@ -67,7 +67,9 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                   bottom: -50.0,
                   child: CircleAvatar(
                     radius: 50.0,
-                    backgroundImage: NetworkImage(widget.providerProfile),
+                    backgroundImage: widget.providerProfile != null
+                        ? NetworkImage(widget.providerProfile)
+                        : null, // or some default image
                   ),
                 ),
               ],

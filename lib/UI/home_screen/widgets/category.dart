@@ -1,11 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Models/category_model.dart';
 import 'package:service_pro_user/Provider/category_provider.dart';
+import 'package:service_pro_user/Provider/search_provider/service_search_provider.dart';
 import 'package:service_pro_user/UI/home_screen/widgets/service.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:service_pro_user/UI/service_providers/service_providers.dart';
+
+class CustomCacheManager extends CacheManager {
+  static const key = "customCacheKey";
+
+  CustomCacheManager()
+      : super(Config(
+          key,
+          stalePeriod: const Duration(days: 7),
+          maxNrOfCacheObjects: 1000,
+        ));
+}
 
 class Category extends StatefulWidget {
   const Category({super.key});
@@ -15,10 +27,108 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
+  TextEditingController searchController = TextEditingController();
   @override
   void initState() {
     super.initState();
     Provider.of<CategoryProvider>(context, listen: false).getCategories();
+  }
+
+  Future<void> showSearchResults(BuildContext context) async {
+    final searchServiceData =
+        Provider.of<SearchService>(context, listen: false).searchData;
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(15.0),
+                    topRight: Radius.circular(15.0),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Search Results',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Flexible(
+                child: searchServiceData.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'No results found.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: searchServiceData.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ServiceProviders(
+                                      serviceData: searchServiceData[index]),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.search),
+                                  title: Text(
+                                    searchServiceData[index]['Name'].toString(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    searchServiceData[index]['Description']
+                                        .toString(),
+                                  ),
+                                ),
+                                const Divider(),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -39,18 +149,57 @@ class _CategoryState extends State<Category> {
                     borderRadius: BorderRadius.circular(5),
                     color: Theme.of(context).primaryColor,
                   ),
-                  child: const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Categories',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Categories',
+                          style: TextStyle(fontSize: 22, color: Colors.white),
+                        ),
+                        const SizedBox(
+                            width:
+                                35), // Adds some space between the text and the search bar
+                        Expanded(
+                          child: TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Search Services',
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 8),
+                              prefixIcon: Icon(Icons.search,
+                                  color: Theme.of(context).primaryColor),
+                              suffixIcon: IconButton(
+                                  onPressed: () async {
+                                    try {
+                                      await Provider.of<SearchService>(context,
+                                              listen: false)
+                                          .setSearchService(
+                                              context, searchController.text);
+                                      await showSearchResults(context);
+                                    } catch (e) {
+                                      print('search failed: $e');
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.send_sharp,
+                                    color: Theme.of(context).primaryColor,
+                                    size: 30,
+                                  )),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 GridView.builder(
@@ -88,6 +237,7 @@ class _CategoryState extends State<Category> {
                                     fit: BoxFit.fill,
                                     child: CachedNetworkImage(
                                         imageUrl: image,
+                                        cacheManager: CustomCacheManager(),
                                         placeholder: (context, url) => Lottie.asset(
                                             'assets/lotties_animation/loading.json'),
                                         errorWidget: (context, url, error) =>
@@ -99,7 +249,7 @@ class _CategoryState extends State<Category> {
                             ),
                             Text(
                               categories.name.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                           ],

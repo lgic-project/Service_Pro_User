@@ -46,6 +46,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
               alignment: Alignment.center,
               children: [
                 Container(
+                  padding: EdgeInsets.only(left: 10, right: 10),
                   height: 200.0,
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
@@ -54,13 +55,12 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                       end: Alignment.bottomRight,
                     ),
                   ),
-                  child: ListView(
+                  child: ListView.builder(
+                    itemCount: widget.providerProfile.length,
+                    itemBuilder: (context, index) {
+                      return Image.network(widget.providerProfile);
+                    },
                     scrollDirection: Axis.horizontal,
-                    children: [
-                      Image.asset('assets/profile/default_profile.jpg'),
-                      Image.asset('assets/profile/default_profile.jpg'),
-                      Image.asset('assets/profile/default_profile.jpg'),
-                    ],
                   ),
                 ),
                 Positioned(

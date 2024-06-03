@@ -89,7 +89,8 @@ class _ServiceProvidersState extends State<ServiceProviders> {
                             ['ServiceAnalytics']['CompletedServices']
                         .toString();
                     final providerProfile =
-                        serviceProviders[index]['Image'].toString();
+                        serviceProviders[index]['Image'][0].toString();
+                    print('providerProfile: $providerProfile');
                     return Padding(
                       padding: EdgeInsets.all(12.0),
                       child: Card(
@@ -125,7 +126,8 @@ class _ServiceProvidersState extends State<ServiceProviders> {
                               children: [
                                 CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                    serviceProviders[index]['Image'].toString(),
+                                    serviceProviders[index]['Image'][0]
+                                        .toString(),
                                   ),
                                   radius: 40,
                                 ),

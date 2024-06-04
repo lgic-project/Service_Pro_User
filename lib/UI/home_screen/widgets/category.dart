@@ -154,47 +154,53 @@ class _CategoryState extends State<Category> {
                     child: Row(
                       children: [
                         const Text(
-                          'Categories',
+                          'CATEGORIES',
                           style: TextStyle(fontSize: 22, color: Colors.white),
                         ),
-                        const SizedBox(
-                            width:
-                                35), // Adds some space between the text and the search bar
+                        const SizedBox(width: 30),
                         Expanded(
                           child: TextField(
                             controller: searchController,
                             decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 10.0),
                               hintText: 'Search Services',
-                              fillColor: Colors.white,
+                              hintStyle: TextStyle(color: Colors.white54),
+                              prefixIcon:
+                                  Icon(Icons.search, color: Colors.white),
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.send, color: Colors.white),
+                                onPressed: () async {
+                                  try {
+                                    await Provider.of<SearchService>(context,
+                                            listen: false)
+                                        .setSearchService(
+                                            context, searchController.text);
+                                    await showSearchResults(context);
+                                  } catch (e) {
+                                    print('search failed: $e');
+                                  }
+                                  searchController.clear();
+                                },
+                              ),
                               filled: true,
+                              fillColor: Colors.white.withOpacity(0.2),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
+                                borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide.none,
                               ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 8),
-                              prefixIcon: Icon(Icons.search,
-                                  color: Theme.of(context).primaryColor),
-                              suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    try {
-                                      await Provider.of<SearchService>(context,
-                                              listen: false)
-                                          .setSearchService(
-                                              context, searchController.text);
-                                      await showSearchResults(context);
-                                    } catch (e) {
-                                      print('search failed: $e');
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.send_sharp,
-                                    color: Theme.of(context).primaryColor,
-                                    size: 30,
-                                  )),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
                             ),
+                            style: TextStyle(color: Colors.white),
+                            cursorColor: Colors.white,
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

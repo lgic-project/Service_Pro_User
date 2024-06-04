@@ -5,6 +5,7 @@ import 'package:service_pro_user/Provider/chat_user_provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/signup_provider.dart';
 import 'package:service_pro_user/Provider/search_provider/service_search_provider.dart';
+import 'package:service_pro_user/Provider/search_provider/user_search_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/put_user_provider.dart';
 import 'package:service_pro_user/UI/Navigator/navigator_scaffold.dart';
@@ -38,6 +39,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => SignUpProvider()),
         ChangeNotifierProvider(create: (_) => UpdateUserDetails()),
         ChangeNotifierProvider(create: (_) => SearchService()),
+        ChangeNotifierProvider(create: (_) => UserSearchProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

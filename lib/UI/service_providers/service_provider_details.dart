@@ -127,9 +127,9 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChatScreen(
-                          providerId: widget.providerId,
-                          providerName: widget.providerName,
-                          providerImage: widget.providerProfile,
+                          providerId: widget.providerId ?? '',
+                          providerName: widget.providerName ?? '',
+                          providerImage: widget.providerProfile ?? '',
                         ),
                       ),
                     );

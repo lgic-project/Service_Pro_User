@@ -1,41 +1,11 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
-
-class UpdateUserDetails with ChangeNotifier {
-  Future<void> updateUserDetails(
-    BuildContext context,
-    String name,
-    String address,
-    String phone,
-  ) async {
-    try {
-      final token =
-          Provider.of<LoginLogoutProvider>(context, listen: false).token;
-      final response = await http.put(
-        Uri.parse('http://20.52.185.247:8000/user/profile'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode(<String, String>{
-          'Name': name,
-          'Address': address,
-          'PhoneNo': phone,
-        }),
-      );
-      if (response.statusCode == 200) {
-        print('User updated successfully: ${response.body}');
-      } else {
-        print('Error updating user: ${response.body}');
-      }
-    } catch (e) {
-      print('Error updating user: $e');
-    }
-  }
-}
+import 'package:service_pro_user/Provider/user_provider/put_user_provider.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class AccountInformationPage extends StatefulWidget {
   final String name;
@@ -58,6 +28,7 @@ class AccountInformationPage extends StatefulWidget {
 }
 
 class _AccountInformationPageState extends State<AccountInformationPage> {
+  bool _isDataChanged = false;
   final Color primaryColor = const Color(0xFF43cbac);
   final Color secondaryColor = const Color(0xFFf5f5f5);
   late TextEditingController _nameController;
@@ -65,6 +36,7 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
   String? _profileImage;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -74,6 +46,56 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
     _emailController = TextEditingController(text: widget.email);
     _phoneController = TextEditingController(text: widget.phone.toString());
     _addressController = TextEditingController(text: widget.address);
+    _nameController.addListener(_onDataChanged);
+    _emailController.addListener(_onDataChanged);
+    _phoneController.addListener(_onDataChanged);
+    _addressController.addListener(_onDataChanged);
+  }
+
+  @override
+  void dispose() {
+    _nameController.removeListener(_onDataChanged);
+    _emailController.removeListener(_onDataChanged);
+    _phoneController.removeListener(_onDataChanged);
+    _addressController.removeListener(_onDataChanged);
+    super.dispose();
+  }
+
+  void _onDataChanged() {
+    setState(() {
+      _isDataChanged = true;
+    });
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final directory = await getTemporaryDirectory();
+      final targetPath = path.join(directory.path,
+          '${DateTime.now().millisecondsSinceEpoch}_compressed.jpg');
+
+      final compressedFile = await FlutterImageCompress.compressAndGetFile(
+        pickedFile.path,
+        targetPath,
+      );
+
+      if (compressedFile != null) {
+        final imageUrl =
+            await Provider.of<UpdateUserDetails>(context, listen: false)
+                .uploadProfileImage(context, compressedFile.path);
+        if (imageUrl != null) {
+          setState(() {
+            _profileImage = imageUrl; // Update the profile image URL
+            _isDataChanged = true;
+          });
+        } else {
+          print('Image upload failed');
+        }
+      } else {
+        print('Image compression failed');
+      }
+    }
   }
 
   @override
@@ -91,10 +113,25 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
           child: Column(
             children: <Widget>[
               const SizedBox(height: 20),
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: primaryColor,
-                backgroundImage: NetworkImage(_profileImage ?? ''),
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: primaryColor,
+                    backgroundImage: _profileImage != null &&
+                            _profileImage!.startsWith('http')
+                        ? NetworkImage(_profileImage!)
+                        : FileImage(File(_profileImage!)) as ImageProvider,
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: IconButton(
+                      icon: Icon(Icons.edit, color: primaryColor),
+                      onPressed: _pickImage,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 30),
               _buildEditableField(
@@ -118,27 +155,60 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
                 title: widget.address,
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: primaryColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+              if (_isDataChanged)
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
+                  onPressed: () async {
+                    if (_nameController.text.isEmpty ||
+                        _addressController.text.isEmpty ||
+                        _phoneController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please fill in all fields'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+                    bool isUpdated = await Provider.of<UpdateUserDetails>(
+                            context,
+                            listen: false)
+                        .updateUserDetails(
+                      context,
+                      _nameController.text,
+                      _addressController.text,
+                      _phoneController.text,
+                      _profileImage ?? '',
+                    );
+                    if (isUpdated) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('User updated successfully'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      setState(() {
+                        _isDataChanged = false;
+                      });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Error updating user'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Save', style: TextStyle(fontSize: 16)),
                 ),
-                onPressed: () {
-                  // Call updateUserDetails function here
-                  UpdateUserDetails().updateUserDetails(
-                    context,
-                    _nameController.text,
-                    _addressController.text,
-                    _phoneController.text,
-                  );
-                },
-                child: const Text('Save', style: TextStyle(fontSize: 16)),
-              ),
             ],
           ),
         ),

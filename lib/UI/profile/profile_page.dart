@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ],
                     ),
                     image: DecorationImage(
-                      image: AssetImage('assets/background.png'),
+                      image: AssetImage('assets/background.jpgg'),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
                           Colors.black.withOpacity(0.2), BlendMode.darken),
@@ -109,13 +109,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AccountInformationPage(
-                                    name: name,
-                                    email: email,
-                                    phone: phone,
-                                    address: address,
-                                    profile: profilePic,
-                                  )),
+                            builder: (context) => AccountInformationPage(
+                              name: name,
+                              email: email,
+                              phone: phone,
+                              address: address,
+                              profile: profilePic,
+                            ),
+                          ),
                         );
                       },
                     ),

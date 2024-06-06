@@ -36,59 +36,73 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _connectSocket() async {
-    final token = await AuthService().getToken();
-    if (token != null) {
-      socket = IO.io('http://20.52.185.247:8000', <String, dynamic>{
-        'transports': ['websocket'],
-        'query': {'token': token},
-      });
-
-      socket.on('connect', (_) {
-        print('Connected to socket server');
-      });
-
-      socket.on('message', (data) {
-        setState(() {
-          messages.add(data);
-          _scrollToBottom();
+    try {
+      final token = await AuthService().getToken();
+      if (token != null) {
+        socket = IO.io('http://20.52.185.247:8000', <String, dynamic>{
+          'transports': ['websocket'],
+          'query': {'token': token},
         });
-      });
 
-      socket.on('disconnect', (_) => print('Disconnected from socket server'));
-    } else {
-      // Handle the case where the token is null
-      print('Token is null. Cannot connect to socket server.');
+        socket.on('connect', (_) {
+          print('Connected to socket server');
+        });
+
+        socket.on('liveMessage', (data) {
+          setState(() {
+            messages.add({
+              'sender': 'receiver',
+              'message': data,
+            });
+            _scrollToBottom();
+          });
+        });
+
+        socket.on(
+            'disconnect', (_) => print('Disconnected from socket server'));
+      } else {
+        print('Token is null. Cannot connect to socket server.');
+      }
+    } catch (e) {
+      print('Error connecting to socket: $e');
     }
   }
 
   Future<void> _fetchMessages() async {
-    final token =
-        Provider.of<LoginLogoutProvider>(context, listen: false).token;
-    final response = await http.post(
-      Uri.parse('http://20.52.185.247:8000/message'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({'receiver': widget.providerId}),
-    );
+    try {
+      final token =
+          Provider.of<LoginLogoutProvider>(context, listen: false).token;
+      if (token == null) {
+        print('Token is null. Cannot fetch messages.');
+        return;
+      }
+      final response = await http.post(
+        Uri.parse('http://20.52.185.247:8000/message'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'receiver': widget.providerId}),
+      );
 
-    if (response.statusCode == 200) {
-      print('Response: ${response.body}');
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      var newMessages = data['data'] as List<dynamic>;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        var newMessages = data['data'] as List<dynamic>;
 
-      setState(() {
-        messages = newMessages.map<Map<String, dynamic>>((message) {
-          return {
-            'sender': message['status'] == 'sender' ? 'sender' : 'receiver',
-            'message': message['message'],
-          };
-        }).toList();
-        _scrollToBottom();
-      });
-    } else {
-      throw Exception('Failed to load messages');
+        setState(() {
+          messages = newMessages.map<Map<String, dynamic>>((message) {
+            return {
+              'sender': message['status'] == 'sender' ? 'sender' : 'receiver',
+              'message': message['message'],
+            };
+          }).toList();
+          _scrollToBottom();
+        });
+      } else {
+        print('Failed to load messages: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching messages: $e');
     }
   }
 

@@ -126,14 +126,21 @@ class _SignUpPageState extends State<SignUpPage> {
                         email.isNotEmpty &&
                         password.isNotEmpty) {
                       final imagePath = _image!.path;
-                      context.read<SignUpProvider>().signUp(
+                      context
+                          .read<SignUpProvider>()
+                          .signUp(
                             name,
                             email,
                             password,
                             phoneNumber,
                             address,
                             imagePath,
-                          );
+                          )
+                          .then((_) => {
+                                context,
+                                Navigator.pushReplacementNamed(
+                                    context, '/login')
+                              });
 
                       // Clear all text fields
                       nameController.clear();
@@ -162,7 +169,23 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                       );
                     } else {
-                      print('Please fill all the fields');
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Error'),
+                            content: Text('Please fill in all fields'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
                   },
                   child: Text('Sign Up', style: TextStyle(color: Colors.white)),

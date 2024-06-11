@@ -37,16 +37,20 @@ class SignUpProvider with ChangeNotifier {
   Future<void> sendVerificationEmail(BuildContext context, String email) async {
     final token =
         Provider.of<LoginLogoutProvider>(context, listen: false).token;
+    final id = Provider.of<LoginLogoutProvider>(context, listen: false)
+        .userId
+        .toString();
     final response = await http.post(
       Uri.parse('http://20.52.185.247:8000/mail/send/welcome'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": 'Bearer $token',
       },
-      body: json.encode({'Email': email}),
+      body: json.encode({'Email': email, 'id': id}),
     );
 
     if (response.statusCode == 200) {
+      print('id: $id');
       print('Verification email sent');
     } else {
       print(

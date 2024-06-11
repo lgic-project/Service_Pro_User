@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,11 +35,13 @@ class LoginLogoutProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
+        print('data: ${data['data']}');
+        print('login success');
         if (data != null && data['data'] != null) {
           final userData = data['data'];
           _token = userData['token'];
-          _userId = userData['_id'] ?? ''; // Use _userId = '' if _id is null
+          Map<String, dynamic> decodedToken = JwtDecoder.decode(_token);
+          _userId = decodedToken['id']; // Use _userId = '' if _id is null
           _verified = userData['Verified'] == true; // Ensure boolean type
 
           if (userData['Role'] == 'user') {

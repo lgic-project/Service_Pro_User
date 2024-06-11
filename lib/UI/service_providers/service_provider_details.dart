@@ -148,7 +148,7 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                 ElevatedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.book),
-                  label: const Text('Book'),
+                  label: const Text('Request'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: const Color(0xFF43cbac),

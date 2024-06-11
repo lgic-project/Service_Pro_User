@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:service_pro_user/UI/profile/account_information.dart';
+import 'package:service_pro_user/UI/settings/settings.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -132,7 +133,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       trailing:
                           Icon(Icons.arrow_forward_ios, color: primaryColor),
                       onTap: () {
-                        // Navigate to settings page
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SettingsScreen()));
                       },
                     ),
                   ),

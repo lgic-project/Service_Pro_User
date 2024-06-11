@@ -65,4 +65,29 @@ class UpdateUserDetails with ChangeNotifier {
       return null;
     }
   }
+
+  Future<void> changeActiveState(BuildContext context, bool active) async {
+    try {
+      final token =
+          Provider.of<LoginLogoutProvider>(context, listen: false).token;
+      final response = await http.put(
+          Uri.parse('http://20.52.185.247:8000/user/profile'), // Corrected URL
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token' // Corrected key
+          },
+          body: jsonEncode(<String, dynamic>{
+            'Active': active,
+          }));
+      if (response.statusCode == 200) {
+        print('Active state changed successfully: ${response.body}');
+        notifyListeners();
+      } else {
+        print(
+            'Error changing active state: ${response.statusCode} ${response.body}');
+      }
+    } catch (e) {
+      print('Exception changing active state: $e');
+    }
+  }
 }

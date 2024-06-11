@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 
 class ProfileProvider with ChangeNotifier {
+  String _userId = '';
+  String get userId => _userId;
   Map<String, dynamic> data = {};
   Future<void> userProfile(BuildContext context) async {
     final token =
@@ -23,6 +25,8 @@ class ProfileProvider with ChangeNotifier {
         if (response.statusCode == 200) {
           print('Response: ${response.body}');
           data = jsonDecode(response.body)['data'];
+          print('Passowrd: ${data['Password']}');
+          _userId = data['_id'] ?? 'no id';
           notifyListeners();
         }
       }

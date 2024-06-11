@@ -6,11 +6,17 @@ import 'package:service_pro_user/Provider/login_signup_provider/login_logout_pro
 import 'package:service_pro_user/Provider/login_signup_provider/signup_provider.dart';
 import 'package:service_pro_user/Provider/search_provider/service_search_provider.dart';
 import 'package:service_pro_user/Provider/search_provider/user_search_provider.dart';
+import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
+import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/put_user_provider.dart';
 import 'package:service_pro_user/UI/Navigator/navigator_scaffold.dart';
+import 'package:service_pro_user/UI/Request/service_request.dart';
+import 'package:service_pro_user/UI/login_signup/forgot_password.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 import 'package:service_pro_user/UI/login_signup/verification_screen.dart';
+import 'package:service_pro_user/UI/settings/widgets/active_status.dart';
+import 'package:service_pro_user/UI/settings/widgets/change_password.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,6 +46,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => UpdateUserDetails()),
         ChangeNotifierProvider(create: (_) => SearchService()),
         ChangeNotifierProvider(create: (_) => UserSearchProvider()),
+        ChangeNotifierProvider(create: (_) => ServiceRequestProvider()),
+        ChangeNotifierProvider(create: (_) => GetServiceRequest()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -51,7 +59,9 @@ class _MyAppState extends State<MyApp> {
           '/': (context) => SplashScreen(),
           '/dashboard': (context) => const NavigatorScaffold(),
           '/login': (context) => const LoginScreen(),
-          '/verification': (context) => const Verification(),
+          '/forgotPassword': (context) => const ForgotPasswordScreen(),
+          '/active_status': (context) => const ActiveStatus(),
+          '/change_password': (context) => const ChangePassword(),
         },
       ),
     );

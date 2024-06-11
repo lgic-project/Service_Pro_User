@@ -42,7 +42,7 @@ class LoginLogoutProvider extends ChangeNotifier {
           _verified = userData['Verified'] == true; // Ensure boolean type
 
           if (userData['Role'] == 'user') {
-            await storeToken(_token);
+            await storeToken(_token, _verified);
             _isLoggedIn = true;
           } else {
             print('Error: Invalid role');
@@ -76,12 +76,15 @@ class LoginLogoutProvider extends ChangeNotifier {
   Future<void> autoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token') ?? '';
-    _isLoggedIn = _token.isNotEmpty;
+    _verified = prefs.getBool('verified') ?? false;
+    _isLoggedIn = _token.isNotEmpty && _verified;
+
     notifyListeners();
   }
 
-  Future<void> storeToken(String token) async {
+  Future<void> storeToken(String token, bool verified) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
+    await prefs.setBool('verified', verified);
   }
 }

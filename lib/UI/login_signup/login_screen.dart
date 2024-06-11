@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/signup_provider.dart';
 import 'package:service_pro_user/UI/login_signup/signup_screen.dart';
+import 'package:service_pro_user/UI/login_signup/verification_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -76,7 +78,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     });
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                            context, '/forgotPassword');
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5),
                 ElevatedButton(
                   onPressed: () async {
                     await userProvider.login(
@@ -89,9 +107,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (userProvider.verified) {
                         Navigator.pushReplacementNamed(context, '/dashboard');
                       } else {
-                        userProvider.logOut();
-                        Navigator.pushReplacementNamed(
-                            context, '/verification');
+                        await Provider.of<SignUpProvider>(context,
+                                listen: false)
+                            .sendVerificationEmail(
+                                context, _emailController.text)
+                            .then((_) => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Verification(
+                                          email: _emailController.text)),
+                                ));
                       }
                     } else {
                       showDialog(

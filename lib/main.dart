@@ -9,13 +9,13 @@ import 'package:service_pro_user/Provider/search_provider/service_search_provide
 import 'package:service_pro_user/Provider/search_provider/user_search_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
+import 'package:service_pro_user/Provider/user_provider/change_password_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/put_user_provider.dart';
+import 'package:service_pro_user/Provider/user_provider/reset_password_provider.dart';
 import 'package:service_pro_user/UI/Navigator/navigator_scaffold.dart';
-import 'package:service_pro_user/UI/Request/service_request.dart';
-import 'package:service_pro_user/UI/login_signup/forgot_password.dart';
+import 'package:service_pro_user/UI/password_reset/forgot_password_screen.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
-import 'package:service_pro_user/UI/login_signup/verification_screen.dart';
 import 'package:service_pro_user/UI/settings/widgets/active_status.dart';
 import 'package:service_pro_user/UI/settings/widgets/change_password.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
@@ -50,6 +50,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => ServiceRequestProvider()),
         ChangeNotifierProvider(create: (_) => ServiceProvider()),
         ChangeNotifierProvider(create: (_) => GetServiceRequest()),
+        ChangeNotifierProvider(create: (_) => ResetPassword()),
+        ChangeNotifierProvider(create: (_) => ChangePassword()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -63,7 +65,7 @@ class _MyAppState extends State<MyApp> {
           '/login': (context) => const LoginScreen(),
           '/forgotPassword': (context) => const ForgotPasswordScreen(),
           '/active_status': (context) => const ActiveStatus(),
-          '/change_password': (context) => const ChangePassword(),
+          '/change_password': (context) => const ChangePasswordScreen(),
         },
       ),
     );

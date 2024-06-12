@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
+import 'package:service_pro_user/Provider/user_provider/change_password_provider.dart';
 
-class ChangePassword extends StatefulWidget {
-  const ChangePassword({super.key});
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
 
   @override
-  State<ChangePassword> createState() => _ChangePasswordState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +29,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           children: <Widget>[
             const SizedBox(height: 20),
             TextFormField(
+              controller: oldPasswordController,
               decoration: InputDecoration(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -43,6 +50,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             ),
             const SizedBox(height: 20),
             TextFormField(
+              controller: newPasswordController,
               decoration: InputDecoration(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -63,6 +71,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             ),
             const SizedBox(height: 20),
             TextFormField(
+              controller: confirmPasswordController,
               decoration: InputDecoration(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -98,7 +107,32 @@ class _ChangePasswordState extends State<ChangePassword> {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20))),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                if (oldPasswordController.text.isEmpty ||
+                    newPasswordController.text.isEmpty ||
+                    confirmPasswordController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Please fill all fields'),
+                    duration: const Duration(seconds: 2),
+                  ));
+                  return;
+                } else if (newPasswordController.text !=
+                    confirmPasswordController.text) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Passwords do not match'),
+                    duration: const Duration(seconds: 2),
+                  ));
+                  return;
+                } else {
+                  await Provider.of<ChangePassword>(context, listen: false)
+                      .changePassword(context, oldPasswordController.text,
+                          newPasswordController.text);
+                  await Provider.of<LoginLogoutProvider>(context, listen: false)
+                      .logOut()
+                      .then((value) => Navigator.pushNamedAndRemoveUntil(
+                          context, '/login', (route) => false));
+                }
+              },
               child: const Text(
                 'Change Password',
                 style: TextStyle(color: Colors.white, fontFamily: 'Roboto'),

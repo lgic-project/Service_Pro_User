@@ -8,7 +8,7 @@ import 'package:service_pro_user/Provider/login_signup_provider/login_logout_pro
 class ChatUserProvider with ChangeNotifier {
   List<dynamic> users = [];
 
-  Future<void> getChatUser(BuildContext context) async {
+  Future<List<dynamic>> getChatUser(BuildContext context) async {
     final token =
         Provider.of<LoginLogoutProvider>(context, listen: false).token;
     print('token : $token');
@@ -21,8 +21,10 @@ class ChatUserProvider with ChangeNotifier {
       users = jsonDecode(response.body)['users'];
 
       notifyListeners();
+      return users;
     } else {
       print('Error: ${response.body}');
     }
+    return [];
   }
 }

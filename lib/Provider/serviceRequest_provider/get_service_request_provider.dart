@@ -24,8 +24,8 @@ class GetServiceRequest with ChangeNotifier {
         _serviceRequests = jsonDecode(response.body)['data'];
 
         notifyListeners();
-        print('Service requests fetched successfully:');
-        
+        // print('Service requests fetched successfully:');
+
         return _serviceRequests;
       } else {
         print(

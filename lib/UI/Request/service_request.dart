@@ -3,12 +3,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 
 class ServiceRequest extends StatefulWidget {
   final dynamic serviceData;
@@ -42,6 +42,27 @@ class _ServiceRequestState extends State<ServiceRequest> {
   DateTime? selectedDateTime;
   PickedFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
+  List<dynamic> existingRequests = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchExistingRequests();
+  }
+
+  Future<void> _fetchExistingRequests() async {
+    final token =
+        Provider.of<LoginLogoutProvider>(context, listen: false).token;
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+    final userId = decodedToken['id'];
+    final requests =
+        await Provider.of<GetServiceRequest>(context, listen: false)
+            .getServiceRequest(context);
+    setState(() {
+      existingRequests =
+          requests.where((item) => item['UserId'] == userId).toList();
+    });
+  }
 
   Future<void> _selectDateTime(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -88,16 +109,13 @@ class _ServiceRequestState extends State<ServiceRequest> {
   }
 
   Future<void> _submitServiceRequest() async {
-    final userId =
-        Provider.of<ProfileProvider>(context, listen: false).userId.toString();
-
-    final existingRequests =
-        await Provider.of<GetServiceRequest>(context, listen: false)
-            .serviceRequests;
+    final token =
+        Provider.of<LoginLogoutProvider>(context, listen: false).token;
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+    final userId = decodedToken['id'];
 
     final matchedRequest = existingRequests.firstWhere(
       (item) =>
-          item['UserId'] == userId &&
           item['ServiceId'] == widget.serviceData['_id'] &&
           item['ProviderId'] == widget.providerId,
       orElse: () => null,

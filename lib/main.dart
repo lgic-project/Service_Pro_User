@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/category_and_service_provider/service_provider.dart';
 import 'package:service_pro_user/Provider/category_provider.dart';
 import 'package:service_pro_user/Provider/chat_user_provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => SearchService()),
         ChangeNotifierProvider(create: (_) => UserSearchProvider()),
         ChangeNotifierProvider(create: (_) => ServiceRequestProvider()),
+        ChangeNotifierProvider(create: (_) => ServiceProvider()),
         ChangeNotifierProvider(create: (_) => GetServiceRequest()),
       ],
       child: MaterialApp(

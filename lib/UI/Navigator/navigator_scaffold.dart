@@ -22,6 +22,20 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
   late Widget currentBody;
 
   TextEditingController searchController = TextEditingController();
+  String getAppBarTitle() {
+    switch (currentIndex) {
+      case 0:
+        return 'SERVICE PRO';
+      case 1:
+        return 'CHAT';
+      case 2:
+        return 'BOOKING';
+      case 3:
+        return 'PROFILE';
+      default:
+        return 'SERVICE PRO';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +70,8 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
             automaticallyImplyLeading: false,
             title: Row(
               children: [
-                const Text('SERVICE PRO',
-                    style: TextStyle(color: Colors.white)),
+                Text(getAppBarTitle(),
+                    style: const TextStyle(color: Colors.white)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: TextField(

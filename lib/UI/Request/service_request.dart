@@ -9,6 +9,7 @@ import 'package:service_pro_user/Provider/login_signup_provider/login_logout_pro
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ServiceRequest extends StatefulWidget {
   final dynamic serviceData;
@@ -202,9 +203,19 @@ class _ServiceRequestState extends State<ServiceRequest> {
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
                 ),
-                child: Image(
-                  image: CachedNetworkImageProvider(serviceImage),
+                child: CachedNetworkImage(
+                  imageUrl: serviceImage,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      height: 250,
+                      width: double.infinity,
+                      color: Colors.white,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
               Positioned(

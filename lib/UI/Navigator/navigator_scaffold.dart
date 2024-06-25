@@ -309,7 +309,9 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
                               ? searchServiceData[index]['Image'][0].toString()
                               : null;
                           ;
-                          if (searchServiceData[index]['Role'] == 'Provider') {
+                          if (searchServiceData[index]['Role'] == 'Provider' &&
+                              searchServiceData[index]['Verified'] == true &&
+                              searchServiceData[index]['Active'] == true) {
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -361,7 +363,6 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
                               ),
                             );
                           } else {}
-                          return null;
                         },
                       ),
               ),

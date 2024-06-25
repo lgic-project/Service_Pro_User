@@ -95,235 +95,246 @@ class _ServiceProvidersState extends State<ServiceProviders> {
                         serviceProviders[index]['Image'] != null
                             ? serviceProviders[index]['Image'][0].toString()
                             : null;
-                    return Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ServiceProviderDetails(
-                                    providerId: providerId,
-                                    providerName: providerName,
-                                    providerAddress: providerAddress,
-                                    providerPhone: providerPhone,
-                                    providerEmail: providerEmail,
-                                    providerServiceTotal: providerServiceTotal,
-                                    providerServiceCompleted:
-                                        providerServiceCompleted,
-                                    providerProfile: providerProfile,
+                    if (serviceProviders[index]['Verified'] == true &&
+                        serviceProviders[index]['Active'] == true) {
+                      return Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ServiceProviderDetails(
+                                      providerId: providerId,
+                                      providerName: providerName,
+                                      providerAddress: providerAddress,
+                                      providerPhone: providerPhone,
+                                      providerEmail: providerEmail,
+                                      providerServiceTotal:
+                                          providerServiceTotal,
+                                      providerServiceCompleted:
+                                          providerServiceCompleted,
+                                      providerProfile: providerProfile,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: providerProfile != null
-                                      ? NetworkImage(providerProfile)
-                                      : null, // or some default image
-                                  radius: 40,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                );
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: providerProfile != null
+                                        ? NetworkImage(providerProfile)
+                                        : null, // or some default image
+                                    radius: 40,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          serviceProviders[index]['Name']
+                                              .toString(),
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.teal,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.location_on,
+                                              color: Colors.teal,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                serviceProviders[index]
+                                                        ['Address']
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.grey[700],
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.phone,
+                                              color: Colors.teal,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              serviceProviders[index]['PhoneNo']
+                                                  .toString(),
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.grey[700],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.email,
+                                              color: Colors.teal,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                serviceProviders[index]['Email']
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.grey[700],
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        serviceProviders[index]['Name']
-                                            .toString(),
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.teal,
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Theme.of(context).primaryColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChatScreen(
+                                                  providerId: providerId ?? '',
+                                                  providerName:
+                                                      providerName ?? '',
+                                                  providerImage:
+                                                      providerProfile ?? '',
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: const Column(
+                                            children: [
+                                              SizedBox(height: 10),
+                                              Icon(
+                                                Icons.chat,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(height: 4),
+                                              Text(
+                                                '  Chat ',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              SizedBox(height: 5),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.location_on,
-                                            color: Colors.teal,
-                                            size: 20,
+                                      const SizedBox(
+                                          height:
+                                              10), // Add some space between the buttons
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Theme.of(context).primaryColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
                                           ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              serviceProviders[index]['Address']
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.grey[700],
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ServiceRequest(
+                                                  serviceData:
+                                                      widget.serviceData,
+                                                  providerId: providerId,
+                                                  providerName: providerName,
+                                                  providerAddress:
+                                                      providerAddress,
+                                                  providerPhone: providerPhone,
+                                                  providerEmail: providerEmail,
+                                                  providerServiceTotal:
+                                                      providerServiceTotal,
+                                                  providerServiceCompleted:
+                                                      providerServiceCompleted,
+                                                  providerProfile:
+                                                      providerProfile
+                                                          .toString(),
+                                                ),
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.phone,
-                                            color: Colors.teal,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            serviceProviders[index]['PhoneNo']
-                                                .toString(),
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.grey[700],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.email,
-                                            color: Colors.teal,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              serviceProviders[index]['Email']
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.grey[700],
+                                            );
+                                          },
+                                          child: const Column(
+                                            children: [
+                                              SizedBox(height: 10),
+                                              Icon(
+                                                Icons
+                                                    .assignment, // Changed icon to 'assignment'
+                                                color: Colors.white,
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                              SizedBox(height: 4),
+                                              Text(
+                                                'Request',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              SizedBox(height: 5),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Theme.of(context).primaryColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ChatScreen(
-                                                providerId: providerId ?? '',
-                                                providerName:
-                                                    providerName ?? '',
-                                                providerImage:
-                                                    providerProfile ?? '',
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: const Column(
-                                          children: [
-                                            SizedBox(height: 10),
-                                            Icon(
-                                              Icons.chat,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              '  Chat ',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            SizedBox(height: 5),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                        height:
-                                            10), // Add some space between the buttons
-                                    Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Theme.of(context).primaryColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ServiceRequest(
-                                                serviceData: widget.serviceData,
-                                                providerId: providerId,
-                                                providerName: providerName,
-                                                providerAddress:
-                                                    providerAddress,
-                                                providerPhone: providerPhone,
-                                                providerEmail: providerEmail,
-                                                providerServiceTotal:
-                                                    providerServiceTotal,
-                                                providerServiceCompleted:
-                                                    providerServiceCompleted,
-                                                providerProfile:
-                                                    providerProfile.toString(),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: const Column(
-                                          children: [
-                                            SizedBox(height: 10),
-                                            Icon(
-                                              Icons
-                                                  .assignment, // Changed icon to 'assignment'
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              'Request',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            SizedBox(height: 5),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      return SizedBox.shrink();
+                    }
                   },
                 ),
     );

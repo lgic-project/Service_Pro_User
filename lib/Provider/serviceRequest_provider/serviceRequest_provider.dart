@@ -63,4 +63,22 @@ class ServiceRequestProvider with ChangeNotifier {
       return null;
     }
   }
+
+  Future<void> completeRequest(BuildContext context, String id) async {
+    final token =
+        Provider.of<LoginLogoutProvider>(context, listen: false).token;
+    final response = await http.post(
+      Uri.parse('http://20.52.185.247:8000/request/complete/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Request completed');
+      notifyListeners();
+    } else {
+      print(
+          'Failed to complete request ${response.statusCode} ${response.body}');
+    }
+  }
 }

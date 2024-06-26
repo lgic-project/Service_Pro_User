@@ -18,6 +18,7 @@ import 'package:service_pro_user/UI/password_reset/forgot_password_screen.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 import 'package:service_pro_user/UI/settings/widgets/active_status.dart';
 import 'package:service_pro_user/UI/settings/widgets/change_password.dart';
+import 'package:service_pro_user/UI/settings/widgets/delete_account.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,6 +67,7 @@ class _MyAppState extends State<MyApp> {
           '/forgotPassword': (context) => const ForgotPasswordScreen(),
           '/active_status': (context) => const ActiveStatus(),
           '/change_password': (context) => const ChangePasswordScreen(),
+          '/delete_account': (context) => const DeleteAccount(),
         },
       ),
     );

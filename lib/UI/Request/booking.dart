@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/category_and_service_provider/service_provider.dart';
 import 'package:service_pro_user/Provider/chat_user_provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
+import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
 
 class Booking extends StatefulWidget {
   const Booking({Key? key}) : super(key: key);
@@ -63,6 +65,7 @@ class _BookingState extends State<Booking> {
 
           // Categorize requests
           final pendingRequests = [],
+              acceptedRequests = [],
               rejectedRequests = [],
               completedRequests = [];
           for (var request in requestData) {
@@ -70,6 +73,9 @@ class _BookingState extends State<Booking> {
               switch (request['Status']) {
                 case 'pending':
                   pendingRequests.add(request);
+                  break;
+                case 'accepted':
+                  acceptedRequests.add(request);
                   break;
                 case 'rejected':
                   rejectedRequests.add(request);
@@ -86,6 +92,8 @@ class _BookingState extends State<Booking> {
             child: Column(
               children: [
                 _buildSection('Pending', pendingRequests, Colors.orange,
+                    allData, providerData),
+                _buildSection('Accepted', acceptedRequests, Colors.blue,
                     allData, providerData),
                 _buildSection('Rejected', rejectedRequests, Colors.red, allData,
                     providerData),
@@ -127,7 +135,8 @@ class _BookingState extends State<Booking> {
           ),
         ),
         ...requests
-            .map((request) => _buildRequestItem(request, allData, providerData))
+            .map((request) =>
+                _buildRequestItem(request, allData, providerData, title))
             .toList(),
       ],
     );
@@ -137,6 +146,8 @@ class _BookingState extends State<Booking> {
     switch (category.toLowerCase()) {
       case 'pending':
         return Icons.access_time;
+      case 'accepted':
+        return Icons.check_circle;
       case 'rejected':
         return Icons.close;
       case 'completed':
@@ -146,8 +157,8 @@ class _BookingState extends State<Booking> {
     }
   }
 
-  Widget _buildRequestItem(
-      dynamic request, List<dynamic> allData, List<dynamic> providerData) {
+  Widget _buildRequestItem(dynamic request, List<dynamic> allData,
+      List<dynamic> providerData, String sectionTitle) {
     var service = allData.firstWhere((s) => s['_id'] == request['ServiceId'],
         orElse: () => null);
     var provider = providerData.firstWhere(
@@ -205,6 +216,26 @@ class _BookingState extends State<Booking> {
                 ),
               ],
             ),
+            if (sectionTitle == 'Accepted')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await Provider.of<ServiceRequestProvider>(context,
+                              listen: false)
+                          .completeRequest(context, request['_id'])
+                          .then((value) => () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        backgroundColor: Colors.green,
+                                        content: Text('Request completed')));
+                              });
+                    },
+                    child: Text('Complete Task'),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
@@ -215,6 +246,8 @@ class _BookingState extends State<Booking> {
     switch (status.toLowerCase()) {
       case 'pending':
         return Colors.orange;
+      case 'accepted':
+        return Colors.blue;
       case 'rejected':
         return Colors.red;
       case 'completed':

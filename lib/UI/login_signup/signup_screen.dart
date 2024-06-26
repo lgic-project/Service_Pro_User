@@ -85,7 +85,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
-                buildInputField(nameController, 'Name', Icons.person),
+                buildInputField(
+                  nameController,
+                  'Name',
+                  Icons.person,
+                ),
                 SizedBox(height: 10),
                 buildInputField(
                     addressController, 'Address', Icons.location_on),
@@ -113,7 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 _buildImageContainer(),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final name = nameController.text;
                     final address = addressController.text;
                     final phoneNumber = phoneNumberController.text;
@@ -125,49 +129,71 @@ class _SignUpPageState extends State<SignUpPage> {
                         phoneNumber.isNotEmpty &&
                         email.isNotEmpty &&
                         password.isNotEmpty) {
-                      final imagePath = _image!.path;
-                      context
+                      final compressedImage = await context
                           .read<SignUpProvider>()
-                          .signUp(
-                            name,
-                            email,
-                            password,
-                            phoneNumber,
-                            address,
-                            imagePath,
-                          )
-                          .then((_) => {
-                                context,
-                                Navigator.pushReplacementNamed(
-                                    context, '/login')
-                              });
+                          .compressImage(_image!);
+                      if (compressedImage != null) {
+                        final imageUrl = await context
+                            .read<SignUpProvider>()
+                            .uploadProfileImage(compressedImage.path);
+                        if (imageUrl != null) {
+                          await context.read<SignUpProvider>().signUp(
+                                name,
+                                email,
+                                password,
+                                phoneNumber,
+                                address,
+                                imageUrl,
+                              );
+                          Navigator.pushReplacementNamed(context, '/login');
 
-                      // Clear all text fields
-                      nameController.clear();
-                      addressController.clear();
-                      phoneNumberController.clear();
-                      emailController.clear();
-                      passwordController.clear();
+                          // Clear all text fields
+                          nameController.clear();
+                          addressController.clear();
+                          phoneNumberController.clear();
+                          emailController.clear();
+                          passwordController.clear();
 
-                      // Show pop-up message
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Success'),
-                            content: Text(
-                                'Sign up successful!\nPlease check your email for verification'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
+                          // Show pop-up message
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Success'),
+                                content: Text(
+                                    'Sign up successful!\nPlease login to verify your email!!'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
-                        },
-                      );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Error'),
+                                content: Text(
+                                    'Failed to upload profile image. Please try again.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      }
                     } else {
                       showDialog(
                         context: context,

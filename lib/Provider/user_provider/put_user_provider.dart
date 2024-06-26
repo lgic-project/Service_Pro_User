@@ -90,4 +90,20 @@ class UpdateUserDetails with ChangeNotifier {
       print('Exception changing active state: $e');
     }
   }
+
+  Future<void> deleteAccount(BuildContext context) async {
+    final token =
+        Provider.of<LoginLogoutProvider>(context, listen: false).token;
+    final response = await http
+        .delete(Uri.parse('http://20.52.185.247:8000/user/profile'), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      print('Account deleted successfully');
+      notifyListeners();
+    } else {
+      print('Error deleting account: ${response.statusCode} ${response.body}');
+    }
+  }
 }

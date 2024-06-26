@@ -91,11 +91,11 @@ class SettingsScreen extends StatelessWidget {
               child: ListTile(
                 leading: const CircleAvatar(
                   backgroundColor: Color(0xFF43cbac),
-                  child: Icon(Icons.notifications, color: Colors.white),
+                  child: Icon(Icons.delete, color: Colors.white),
                 ),
-                title: const Text('Notifications'),
+                title: const Text('Delete Account'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/notifications');
+                  Navigator.pushNamed(context, '/delete_account');
                 },
               ),
             ),

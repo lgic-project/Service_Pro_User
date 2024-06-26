@@ -35,13 +35,9 @@ class _ProfilePageState extends State<ProfilePage> {
         final email = user['Email'] ?? 'nomail@gmail.com';
         final phone = user['PhoneNo'].toString() ?? '0000000000';
         final address = user['Address'] ?? 'Invalid Address';
-        final profilePicList = user['Image'] ??
-            [
-              'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048'
-            ];
-        final profilePic = profilePicList is List && profilePicList.isNotEmpty
-            ? profilePicList[0]
-            : 'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048';
+        final profilePic = user['ProfileImg'] ??
+            'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048';
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

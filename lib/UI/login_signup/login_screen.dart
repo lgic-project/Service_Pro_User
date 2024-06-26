@@ -21,6 +21,24 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<LoginLogoutProvider>(context);
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            },
+            icon: Icon(
+              Icons.close,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           Container(
@@ -128,20 +146,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 20),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: false,
-                            onChanged: (value) {},
-                            checkColor: Colors.blue,
-                            fillColor: MaterialStateProperty.all(Colors.white),
-                          ),
-                          Text('Remember me',
-                              style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     Checkbox(
+                      //       value: false,
+                      //       onChanged: (value) {},
+                      //       checkColor: Colors.blue,
+                      //       fillColor: MaterialStateProperty.all(Colors.white),
+                      //     ),
+                      //     Text('Remember me',
+                      //         style: TextStyle(color: Colors.white)),
+                      //   ],
+                      // ),
                       TextButton(
                         onPressed: () {
                           Navigator.pushReplacementNamed(
@@ -149,8 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text(
                           'Forgot password?',
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 241, 241, 239)),
+                          style: TextStyle(color: Colors.orangeAccent),
                         ),
                       ),
                     ],
@@ -165,8 +182,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Check if the login was successful
                       if (userProvider.isLoggedIn) {
-                        if (userProvider.verified) {
+                        if (userProvider.verified && userProvider.activated) {
                           Navigator.pushReplacementNamed(context, '/dashboard');
+                        } else if (!userProvider.activated) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Error'),
+                                content:
+                                    const Text('Your Account is not activated'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         } else {
                           await Provider.of<SignUpProvider>(context,
                                   listen: false)
@@ -200,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      shadowColor: Colors.orange,
+                      shadowColor: Colors.orangeAccent,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -232,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           TextSpan(
                             text: 'Sign up',
-                            style: TextStyle(color: Colors.orange),
+                            style: TextStyle(color: Colors.orangeAccent),
                           ),
                         ],
                         style: TextStyle(color: Colors.white),

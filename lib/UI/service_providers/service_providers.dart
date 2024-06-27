@@ -92,9 +92,7 @@ class _ServiceProvidersState extends State<ServiceProviders> {
                             ['ServiceAnalytics']['CompletedServices']
                         .toString();
                     final providerProfile =
-                        serviceProviders[index]['Image'] != null
-                            ? serviceProviders[index]['Image'][0].toString()
-                            : null;
+                        serviceProviders[index]['ProfileImg'].toString() ?? '';
                     if (serviceProviders[index]['Verified'] == true &&
                         serviceProviders[index]['Active'] == true) {
                       return Padding(

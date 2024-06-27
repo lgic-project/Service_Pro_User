@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/put_user_provider.dart';
 
@@ -49,7 +50,11 @@ class _DeleteAccountState extends State<DeleteAccount> {
                               await Provider.of<UpdateUserDetails>(context,
                                       listen: false)
                                   .deleteAccount(context);
-                              Navigator.of(context).pop();
+                              await Provider.of<LoginLogoutProvider>(context,
+                                      listen: false)
+                                  .logOut();
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/login', (route) => false);
                             },
                             child: const Text('Yes'),
                           ),

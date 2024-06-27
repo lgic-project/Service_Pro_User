@@ -83,8 +83,8 @@ class LoginLogoutProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token') ?? '';
     _verified = prefs.getBool('verified') ?? false;
-    _verified = prefs.getBool('activated') ?? false;
-    _isLoggedIn = _token.isNotEmpty && _verified && _activated;
+    _activated = prefs.getBool('activated') ?? false;
+    _isLoggedIn = _token.isNotEmpty && _verified && activated;
 
     notifyListeners();
   }

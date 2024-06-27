@@ -23,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -31,11 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/dashboard');
             },
-            icon: Icon(
-              Icons.close,
-              color: Colors.white,
-              size: 30,
-            ),
+            icon: Icon(Icons.close, color: Colors.white, size: 30),
           ),
         ],
       ),
@@ -167,7 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text(
                           'Forgot password?',
-                          style: TextStyle(color: Colors.orangeAccent),
+                          style: TextStyle(
+                              color: const Color.fromARGB(255, 241, 241, 239)),
                         ),
                       ),
                     ],
@@ -190,8 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text('Error'),
-                                content:
-                                    const Text('Your Account is not activated'),
+                                content: const Text('Account not activated'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
@@ -236,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      shadowColor: Colors.orangeAccent,
+                      shadowColor: Colors.orange,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -268,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           TextSpan(
                             text: 'Sign up',
-                            style: TextStyle(color: Colors.orangeAccent),
+                            style: TextStyle(color: Colors.orange),
                           ),
                         ],
                         style: TextStyle(color: Colors.white),

@@ -87,6 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
+        print('messages: ${data}');
         var newMessages = data['data'] as List<dynamic>;
 
         setState(() {

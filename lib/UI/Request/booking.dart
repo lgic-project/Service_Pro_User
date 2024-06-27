@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/category_and_service_provider/service_provider.dart';
 import 'package:service_pro_user/Provider/chat_user_provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
+import 'package:service_pro_user/Provider/rating_and_reviews/reviews_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
 
@@ -52,7 +53,7 @@ class _BookingState extends State<Booking> {
       future: _dataFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
@@ -109,13 +110,13 @@ class _BookingState extends State<Booking> {
 
   Widget _buildSection(String title, List<dynamic> requests, Color color,
       List<dynamic> allData, List<dynamic> providerData) {
-    if (requests.isEmpty) return SizedBox.shrink(); // Or show a message
+    if (requests.isEmpty) return const SizedBox.shrink(); // Or show a message
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           color: color,
           child: Row(
             children: [
@@ -123,10 +124,10 @@ class _BookingState extends State<Booking> {
                 _getIconForCategory(title),
                 color: Colors.white,
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -165,11 +166,11 @@ class _BookingState extends State<Booking> {
         (p) => p['_id'] == request['ProviderId'],
         orElse: () => null);
 
-    if (service == null || provider == null) return SizedBox.shrink();
+    if (service == null || provider == null) return const SizedBox.shrink();
 
     return Card(
       elevation: 2,
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -180,30 +181,30 @@ class _BookingState extends State<Booking> {
               children: [
                 Text(
                   service['Name'] ?? '',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.person,
                   color: Colors.grey,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Provider: ${provider['Name'] ?? ''}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -221,18 +222,52 @@ class _BookingState extends State<Booking> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: () async {
-                      await Provider.of<ServiceRequestProvider>(context,
-                              listen: false)
-                          .completeRequest(context, request['_id'])
-                          .then((value) => () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        backgroundColor: Colors.green,
-                                        content: Text('Request completed')));
-                              });
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Complete Task'),
+                              content: const Text(
+                                  'Are you sure you want to complete this task?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await Provider.of<ServiceRequestProvider>(
+                                            context,
+                                            listen: false)
+                                        .completeRequest(
+                                            context, request['_id'])
+                                        .then((value) {
+                                      // After completing, open rating and reviews dialog
+                                      Navigator.of(context)
+                                          .pop(); // Close previous dialog
+                                      _showRatingReviewDialog(
+                                          context,
+                                          request['ProviderId'],
+                                          request['ServiceId']);
+                                    }).catchError((error) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            'Failed to complete request: $error'),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    });
+                                  },
+                                  child: const Text('Complete'),
+                                ),
+                              ],
+                            );
+                          });
                     },
-                    child: Text('Complete Task'),
+                    child: const Text('Complete Task'),
                   ),
                 ],
               ),
@@ -256,4 +291,60 @@ class _BookingState extends State<Booking> {
         return Colors.grey;
     }
   }
+}
+
+void _showRatingReviewDialog(
+    BuildContext context, String providerId, String serviceId) {
+  double rating = 0.0;
+  TextEditingController commentController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Rating and Reviews'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Rating'),
+            RatingBar.builder(
+              initialRating: rating,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (ratingValue) {
+                rating = ratingValue; // Update the rating based on selection
+              },
+            ),
+            TextFormField(
+              controller: commentController,
+              decoration: const InputDecoration(labelText: 'Comment'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              // Add rating and reviews
+
+              String comment = commentController.text;
+
+              await Provider.of<RatingReview>(context, listen: false)
+                  .addRatingReviews(context, serviceId, providerId,
+                      rating.toString(), comment);
+
+              Navigator.of(context).pop(); // Close dialog after submitting
+            },
+            child: const Text('Submit'),
+          ),
+        ],
+      );
+    },
+  );
 }

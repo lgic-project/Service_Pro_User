@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/rating_and_reviews/get_reviews_provider.dart';
 import 'package:service_pro_user/UI/chat/chat_screen.dart';
 
 class ServiceProviderDetails extends StatefulWidget {
@@ -28,6 +30,44 @@ class ServiceProviderDetails extends StatefulWidget {
 }
 
 class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
+  double averageRating = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showReviews(context);
+    });
+  }
+
+  Future<void> showReviews(BuildContext context) async {
+    final reviewsProvider =
+        Provider.of<GetReviewsProvider>(context, listen: false);
+    await reviewsProvider.getReviews(context, widget.providerId);
+    setState(() {
+      averageRating = calculateAverageRating(reviewsProvider.getreviews);
+    });
+    print('Reviews: ${reviewsProvider.getreviews}');
+  }
+
+  double calculateAverageRating(List reviews) {
+    if (reviews.isEmpty) return 0.0;
+    double sum = reviews.fold(0, (prev, review) => prev + review['Rating']);
+    return sum / reviews.length;
+  }
+
+  List<Widget> buildStarWidgets(double rating, double size) {
+    List<Widget> stars = [];
+    for (int i = 1; i <= 5; i++) {
+      stars.add(Icon(
+        Icons.star,
+        color: i <= rating ? Colors.amber : Colors.grey,
+        size: size,
+      ));
+    }
+    return stars;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,13 +135,6 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    // Text(
-                    //   widget.providerName,
-                    //   style: const TextStyle(
-                    //       fontSize: 24.0,
-                    //       fontWeight: FontWeight.bold,
-                    //       color: Colors.white),
-                    // ),
                     Text(
                       'Address: ${widget.providerAddress}',
                       style: TextStyle(fontSize: 17.0, color: Colors.white),
@@ -144,105 +177,117 @@ class _ServiceProviderDetailsState extends State<ServiceProviderDetails> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10.0),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.book),
-                  label: const Text('Request'),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF43cbac),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                ),
+                // const SizedBox(width: 10.0),
+                // ElevatedButton.icon(
+                //   onPressed: () {},
+                //   icon: const Icon(Icons.book),
+                //   label: const Text('Request'),
+                //   style: ElevatedButton.styleFrom(
+                //     foregroundColor: Colors.white,
+                //     backgroundColor: const Color(0xFF43cbac),
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(15.0),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
+            // const Divider(),
+            // const Padding(
+            //   padding: EdgeInsets.all(8.0),
+            //   child: Text(
+            //     'About',
+            //     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            //   ),
+            // ),
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16.0),
+            //   child: Text(
+            //     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+            //     'Vestibulum vehicula ex eu gravida luctus. Donec vitae arcu '
+            //     'sed tortor facilisis consectetur.',
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
             const Divider(),
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'About',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                'Vestibulum vehicula ex eu gravida luctus. Donec vitae arcu '
-                'sed tortor facilisis consectetur.',
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const Divider(),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Ratings',
+                'Ratings & Reviews',
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  return const Icon(Icons.star, color: Colors.amber);
-                }),
+              child: Column(
+                children: [
+                  Text(
+                    '${averageRating.toStringAsFixed(1)}',
+                    style: TextStyle(
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: buildStarWidgets(averageRating, 35),
+                  ),
+                ],
               ),
             ),
             const Divider(),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Reviews',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Column(
-              children: [
-                Card(
-                  color: const Color(0xFF43cbac),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  elevation: 3.0,
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  child: const ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          AssetImage('assets/profile/default_profile.jpg'),
-                    ),
-                    title: Text('Reviewer 1',
-                        style: TextStyle(color: Colors.white)),
-                    subtitle: Text('Great service!',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-                Card(
-                  color: const Color(0xFF43cbac),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  elevation: 3.0,
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  child: const ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          AssetImage('assets/profile/default_profile.jpg'),
-                    ),
-                    title: Text('Reviewer 2',
-                        style: TextStyle(color: Colors.white)),
-                    subtitle: Text('Very satisfied with the work.',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
+            // const Padding(
+            //   padding: EdgeInsets.all(8.0),
+            //   child: Text(
+            //     'Reviews',
+            //     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            //   ),
+            // ),
+            Consumer<GetReviewsProvider>(
+              builder: (context, reviewsProvider, child) {
+                final reviews = reviewsProvider.getreviews;
+                if (reviews.isEmpty) {
+                  return Center(child: Text('No reviews yet'));
+                }
+                return ListView.builder(
+                  shrinkWrap: true, // Important to prevent infinite height
+                  physics:
+                      NeverScrollableScrollPhysics(), // Disables scrolling within the ListView
+                  itemCount: reviews.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      color: const Color(0xFF43cbac),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      elevation: 3.0,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage(
+                                'assets/profile/default_profile.jpg'),
+                          ),
+                          title: Text(reviews[index]['UserId']['Name'],
+                              style: TextStyle(color: Colors.white)),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Service: ${reviews[index]['ServiceId']['Name']}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                'Comment: ${reviews[index]['Comment']}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          )),
+                    );
+                  },
+                );
+              },
+            )
           ],
         ),
       ),

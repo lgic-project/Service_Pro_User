@@ -61,13 +61,21 @@ class ForgotPasswordScreen extends StatelessWidget {
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () async {
-                await Provider.of<ResetPassword>(context, listen: false)
+                final resetPasswordProvider =
+                    Provider.of<ResetPassword>(context, listen: false);
+                await resetPasswordProvider
                     .resetPassword(emailController.text)
-                    .then((value) => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CodeVerificationScreen(
-                                email: emailController.text))));
+                    .then((_) {
+                  final code = resetPasswordProvider.code;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CodeVerificationScreen(
+                              code: code, email: emailController.text)));
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Failed to send password reset link')));
+                });
               },
               child: const Text('Reset Password'),
               style: ElevatedButton.styleFrom(
@@ -88,11 +96,14 @@ class ForgotPasswordScreen extends StatelessWidget {
 }
 
 class CodeVerificationScreen extends StatelessWidget {
+  final String code;
   final String email;
-  const CodeVerificationScreen({super.key, required this.email});
+  const CodeVerificationScreen(
+      {super.key, required this.email, required this.code});
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController codeController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -132,6 +143,7 @@ class CodeVerificationScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             TextField(
+              controller: codeController,
               decoration: InputDecoration(
                 labelText: 'Verification Code',
                 labelStyle: TextStyle(color: Colors.grey[700]),
@@ -145,11 +157,17 @@ class CodeVerificationScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const NewPasswordSet()));
+              onPressed: () async {
+                print('Code: $code');
+                print('CodeController: ${codeController.text}');
+                if (codeController.text == code)
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewPasswordSet()));
+                else
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Invalid code')));
               },
               child: const Text('Verify Code'),
               style: ElevatedButton.styleFrom(

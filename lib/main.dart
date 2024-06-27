@@ -5,6 +5,8 @@ import 'package:service_pro_user/Provider/category_provider.dart';
 import 'package:service_pro_user/Provider/chat_user_provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/signup_provider.dart';
+import 'package:service_pro_user/Provider/rating_and_reviews/get_reviews_provider.dart';
+import 'package:service_pro_user/Provider/rating_and_reviews/reviews_provider.dart';
 import 'package:service_pro_user/Provider/search_provider/service_search_provider.dart';
 import 'package:service_pro_user/Provider/search_provider/user_search_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
@@ -53,6 +55,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => GetServiceRequest()),
         ChangeNotifierProvider(create: (_) => ResetPassword()),
         ChangeNotifierProvider(create: (_) => ChangePassword()),
+        ChangeNotifierProvider(create: (_) => RatingReview()),
+        ChangeNotifierProvider(create: (_) => GetReviewsProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

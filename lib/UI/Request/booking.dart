@@ -68,7 +68,8 @@ class _BookingState extends State<Booking> {
           final pendingRequests = [],
               acceptedRequests = [],
               rejectedRequests = [],
-              completedRequests = [];
+              completedRequests = [],
+              canceledRequests = [];
           for (var request in requestData) {
             if (request['UserId'] == userId) {
               switch (request['Status']) {
@@ -83,6 +84,9 @@ class _BookingState extends State<Booking> {
                   break;
                 case 'completed':
                   completedRequests.add(request);
+                  break;
+                case 'cancelled':
+                  canceledRequests.add(request);
                   break;
               }
             }
@@ -99,6 +103,8 @@ class _BookingState extends State<Booking> {
                 _buildSection('Rejected', rejectedRequests, Colors.red, allData,
                     providerData),
                 _buildSection('Completed', completedRequests, Colors.green,
+                    allData, providerData),
+                _buildSection('Canceled', canceledRequests, Colors.grey,
                     allData, providerData),
               ],
             ),
@@ -153,6 +159,8 @@ class _BookingState extends State<Booking> {
         return Icons.close;
       case 'completed':
         return Icons.check;
+      case 'cancelled':
+        return Icons.cancel;
       default:
         return Icons.error_outline;
     }
@@ -269,6 +277,49 @@ class _BookingState extends State<Booking> {
                     },
                     child: const Text('Complete Task'),
                   ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Cancel Task'),
+                              content: const Text(
+                                  'Are you sure you want to cancel this task?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await Provider.of<ServiceRequestProvider>(
+                                            context,
+                                            listen: false)
+                                        .cancelRequest(context, request['_id'])
+                                        .then((value) {
+                                      // After completing, open rating and reviews dialog
+                                      Navigator.of(context)
+                                          .pop(); // Close previous dialog
+                                    }).catchError((error) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            'Failed to cancel request: $error'),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    });
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                    child: const Text('Cancel Task'),
+                  ),
                 ],
               ),
           ],
@@ -287,6 +338,8 @@ class _BookingState extends State<Booking> {
         return Colors.red;
       case 'completed':
         return Colors.green;
+      case 'canceled':
+        return Colors.grey;
       default:
         return Colors.grey;
     }

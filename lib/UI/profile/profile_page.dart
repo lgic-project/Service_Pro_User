@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
@@ -67,7 +68,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   left: MediaQuery.of(context).size.width / 2 - 50,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(profilePic.toString()),
+                    backgroundImage:
+                        CachedNetworkImageProvider(profilePic.toString()),
                   ),
                 ),
               ],

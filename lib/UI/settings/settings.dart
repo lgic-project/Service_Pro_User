@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:service_pro_user/UI/profile/account_information.dart';
 
@@ -48,12 +49,10 @@ class SettingsScreen extends StatelessWidget {
                             Provider.of<ProfileProvider>(context, listen: false)
                                     .data['Address'] ??
                                 'Invalid Address',
-                        profile:
-                            Provider.of<ProfileProvider>(context, listen: false)
-                                    .data['Image'][0] ??
-                                [
-                                  'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048'
-                                ],
+                        profile: Provider.of<ProfileProvider>(context,
+                                    listen: false)
+                                .data['ProfileImg'] ??
+                            'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048',
                       ),
                     ),
                   );
@@ -134,7 +133,33 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: const Text('Logout'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/logout');
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Logout'),
+                        content: const Text('Are you sure you want to logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await Provider.of<LoginLogoutProvider>(context,
+                                      listen: false)
+                                  .logOut();
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/login', (route) => false);
+                            },
+                            child: const Text('Yes'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ),
             ),

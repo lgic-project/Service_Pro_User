@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ResetPassword with ChangeNotifier {
-  String _code = '';
-  String get code => _code;
-
   Future<void> resetPassword(String email) async {
     try {
       final response = await http.post(
@@ -17,7 +14,6 @@ class ResetPassword with ChangeNotifier {
         body: jsonEncode({'Email': email}),
       );
       if (response.statusCode == 200) {
-        _code = jsonDecode(response.body)['data'];
         print('Password reset link sent to email');
         notifyListeners();
       } else {

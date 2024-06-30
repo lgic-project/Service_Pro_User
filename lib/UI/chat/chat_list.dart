@@ -60,7 +60,7 @@ class _ChatState extends State<Chat> {
                           chatUsers['Verified'] == true) {
                         final providerId = chatUsers['_id'];
                         final providerName = chatUsers['Name'];
-                        final profile = (chatUsers['Image'] ??
+                        final profile = (chatUsers['ProfileImg'] ??
                                 'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048')
                             .toString();
                         return Column(

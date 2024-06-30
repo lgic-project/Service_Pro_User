@@ -317,13 +317,10 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
                               searchServiceData[index]['ServiceAnalytics']
                                       ['CompletedServices']
                                   .toString();
-                          final providerProfile = searchServiceData[index]
-                                      ['Image'] !=
-                                  null
-                              ? searchServiceData[index]['Image'][0].toString()
-                              : null;
-                          ;
-                          if (searchServiceData[index]['Role'] == 'Provider' &&
+                          final providerProfile =
+                              searchServiceData[index]['ProfileImg'] ?? '';
+
+                          if (searchServiceData[index]['Role'] != 'user' &&
                               searchServiceData[index]['Verified'] == true &&
                               searchServiceData[index]['Active'] == true) {
                             return GestureDetector(

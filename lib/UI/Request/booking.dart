@@ -27,6 +27,12 @@ class _BookingState extends State<Booking> {
     _dataFuture = getBothData();
   }
 
+  Future<void> _refreshData() async {
+    setState(() {
+      _dataFuture = getBothData();
+    });
+  }
+
   Future<Map<String, dynamic>> getBothData() async {
     final requestData =
         await Provider.of<GetServiceRequest>(context, listen: false)
@@ -95,20 +101,24 @@ class _BookingState extends State<Booking> {
           }
 
           // Build UI for each category
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildSection('Pending', pendingRequests, Colors.orange,
-                    allData, providerData),
-                _buildSection('Accepted', acceptedRequests, Colors.blue,
-                    allData, providerData),
-                _buildSection('Rejected', rejectedRequests, Colors.red, allData,
-                    providerData),
-                _buildSection('Completed', completedRequests, Colors.green,
-                    allData, providerData),
-                _buildSection('Canceled', canceledRequests, Colors.grey,
-                    allData, providerData),
-              ],
+          return RefreshIndicator(
+            onRefresh: _refreshData,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  _buildSection('Pending', pendingRequests, Colors.orange,
+                      allData, providerData),
+                  _buildSection('Accepted', acceptedRequests, Colors.blue,
+                      allData, providerData),
+                  _buildSection('Rejected', rejectedRequests, Colors.red,
+                      allData, providerData),
+                  _buildSection('Completed', completedRequests, Colors.green,
+                      allData, providerData),
+                  _buildSection('Canceled', canceledRequests, Colors.grey,
+                      allData, providerData),
+                ],
+              ),
             ),
           );
         }
@@ -255,11 +265,14 @@ class _BookingState extends State<Booking> {
                                     child: const Text('Cancel'),
                                   ),
                                   TextButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const KhaltiExampleApp())),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const KhaltiExampleApp()));
+                                    },
                                     child: const Text('pay'),
                                   ),
                                 ],

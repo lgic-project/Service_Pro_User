@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -30,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/dashboard');
             },
-            icon: Icon(Icons.close, color: Colors.white, size: 30),
+            icon: const Icon(Icons.close, color: Colors.white, size: 30),
           ),
         ],
       ),
@@ -39,7 +40,10 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.greenAccent, Color.fromARGB(255, 90, 251, 96)],
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Colors.teal.withOpacity(0.2)
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -59,7 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
           Positioned(
             bottom: 100,
             left: 50,
-            child: Bubble(color: Color.fromARGB(255, 240, 105, 226), size: 100),
+            child: Bubble(
+                color: const Color.fromARGB(255, 240, 105, 226), size: 100),
           ),
           Positioned(
             bottom: 200,
@@ -69,13 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
           // Login Form
           Center(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              margin: EdgeInsets.symmetric(horizontal: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              margin: const EdgeInsets.symmetric(horizontal: 32),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
-                  BoxShadow(
+                  const BoxShadow(
                     color: Colors.black26,
                     blurRadius: 20,
                     offset: Offset(0, 10),
@@ -85,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
+                  const Text(
                     'Login',
                     style: TextStyle(
                       fontSize: 28,
@@ -93,13 +98,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Username or email',
-                      labelStyle: TextStyle(color: Colors.white),
-                      prefixIcon: Icon(Icons.person, color: Colors.white),
+                      labelStyle: const TextStyle(color: Colors.white),
+                      prefixIcon: const Icon(Icons.person, color: Colors.white),
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.2),
                       border: OutlineInputBorder(
@@ -107,16 +112,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: Colors.white),
-                      prefixIcon: Icon(Icons.lock, color: Colors.white),
+                      labelStyle: const TextStyle(color: Colors.white),
+                      prefixIcon: const Icon(Icons.lock, color: Colors.white),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -137,9 +142,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -160,15 +165,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushReplacementNamed(
                               context, '/forgotPassword');
                         },
-                        child: Text(
+                        child: const Text(
                           'Forgot password?',
                           style: TextStyle(
-                              color: const Color.fromARGB(255, 241, 241, 239)),
+                              color: Color.fromARGB(255, 241, 241, 239)),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
                       await userProvider.login(
@@ -232,12 +237,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       shadowColor: Colors.orange,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'Login',
                         style: TextStyle(
@@ -247,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
@@ -257,13 +262,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       );
                     },
-                    child: Text.rich(
+                    child: const Text.rich(
                       TextSpan(
                         text: "Don't have an account? ",
                         children: [
                           TextSpan(
                             text: 'Sign up',
-                            style: TextStyle(color: Colors.orange),
+                            style: TextStyle(
+                              color: Colors.amberAccent,
+                            ),
                           ),
                         ],
                         style: TextStyle(color: Colors.white),

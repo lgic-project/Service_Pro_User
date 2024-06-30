@@ -25,7 +25,7 @@ class UpdateUserDetails with ChangeNotifier {
           'Name': name,
           'Address': address,
           'PhoneNo': phone,
-          'Image': imageUrl.isNotEmpty ? [imageUrl] : [],
+          'ProfileImg': imageUrl.isNotEmpty ? [imageUrl] : [],
         }),
       );
       if (response.statusCode == 200) {

@@ -4,6 +4,7 @@ class CategoryModel {
   String? description;
   List<dynamic>? services;
   String? image;
+  bool? active;
   String? createdAt;
   String? updatedAt;
 
@@ -13,6 +14,7 @@ class CategoryModel {
     this.description,
     this.services,
     this.image,
+    this.active,
     this.createdAt,
     this.updatedAt,
   });
@@ -23,6 +25,7 @@ class CategoryModel {
     description = json['Description'];
     services = json['Services'];
     image = json['Image'];
+    active = json['Active'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
   }
@@ -34,6 +37,7 @@ class CategoryModel {
     data['Description'] = description;
     data['Services'] = services;
     data['Image'] = image;
+    data['Active'] = active;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
 

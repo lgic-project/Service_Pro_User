@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/category_and_service_provider/service_provider.dart';
@@ -8,6 +9,7 @@ import 'package:service_pro_user/Provider/login_signup_provider/login_logout_pro
 import 'package:service_pro_user/Provider/rating_and_reviews/reviews_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
+import 'package:service_pro_user/UI/Request/payment/khalti_screen.dart';
 
 class Booking extends StatefulWidget {
   const Booking({Key? key}) : super(key: key);
@@ -212,6 +214,12 @@ class _BookingState extends State<Booking> {
                 ),
               ],
             ),
+            Text(
+              DateFormat('MMM d h:mm a').format(
+                  DateTime.parse(request['updatedAt'])
+                      .toUtc()
+                      .add(Duration(hours: 5, minutes: 45))),
+            ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -226,99 +234,139 @@ class _BookingState extends State<Booking> {
               ],
             ),
             if (sectionTitle == 'Accepted')
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Complete Task'),
-                              content: const Text(
-                                  'Are you sure you want to complete this task?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await Provider.of<ServiceRequestProvider>(
-                                            context,
-                                            listen: false)
-                                        .completeRequest(
-                                            context, request['_id'])
-                                        .then((value) {
-                                      // After completing, open rating and reviews dialog
-                                      Navigator.of(context)
-                                          .pop(); // Close previous dialog
-                                      _showRatingReviewDialog(
-                                          context,
-                                          request['ProviderId'],
-                                          request['ServiceId']);
-                                    }).catchError((error) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            'Failed to complete request: $error'),
-                                        backgroundColor: Colors.red,
-                                      ));
-                                    });
-                                  },
-                                  child: const Text('Complete'),
-                                ),
-                              ],
-                            );
-                          });
-                    },
-                    child: const Text('Complete Task'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Cancel Task'),
-                              content: const Text(
-                                  'Are you sure you want to cancel this task?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await Provider.of<ServiceRequestProvider>(
-                                            context,
-                                            listen: false)
-                                        .cancelRequest(context, request['_id'])
-                                        .then((value) {
-                                      // After completing, open rating and reviews dialog
-                                      Navigator.of(context)
-                                          .pop(); // Close previous dialog
-                                    }).catchError((error) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            'Failed to cancel request: $error'),
-                                        backgroundColor: Colors.red,
-                                      ));
-                                    });
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                              ],
-                            );
-                          });
-                    },
-                    child: const Text('Cancel Task'),
+                  Column(children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Complete Task'),
+                                content: const Text(
+                                    'Are you sure you want to pay this task?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const KhaltiExampleApp())),
+                                    child: const Text('pay'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: const Text('Pay Task'),
+                    ),
+                  ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Complete Task'),
+                                  content: const Text(
+                                      'Are you sure you want to complete this task?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await Provider.of<
+                                                    ServiceRequestProvider>(
+                                                context,
+                                                listen: false)
+                                            .completeRequest(
+                                                context, request['_id'])
+                                            .then((value) {
+                                          // After completing, open rating and reviews dialog
+                                          Navigator.of(context)
+                                              .pop(); // Close previous dialog
+                                          _showRatingReviewDialog(
+                                              context,
+                                              request['ProviderId'],
+                                              request['ServiceId']);
+                                        }).catchError((error) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                'Failed to complete request: $error'),
+                                            backgroundColor: Colors.red,
+                                          ));
+                                        });
+                                      },
+                                      child: const Text('Complete'),
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Text('Complete Task'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Cancel Task'),
+                                  content: const Text(
+                                      'Are you sure you want to cancel this task?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await Provider.of<
+                                                    ServiceRequestProvider>(
+                                                context,
+                                                listen: false)
+                                            .cancelRequest(
+                                                context, request['_id'])
+                                            .then((value) {
+                                          // After completing, open rating and reviews dialog
+                                          Navigator.of(context)
+                                              .pop(); // Close previous dialog
+                                        }).catchError((error) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                'Failed to cancel request: $error'),
+                                            backgroundColor: Colors.red,
+                                          ));
+                                        });
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Text('Cancel Task'),
+                      ),
+                    ],
                   ),
                 ],
               ),

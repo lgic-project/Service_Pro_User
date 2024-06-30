@@ -16,6 +16,7 @@ import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/put_user_provider.dart';
 import 'package:service_pro_user/Provider/user_provider/reset_password_provider.dart';
 import 'package:service_pro_user/UI/Navigator/navigator_scaffold.dart';
+import 'package:service_pro_user/UI/Request/booking.dart';
 import 'package:service_pro_user/UI/password_reset/forgot_password_screen.dart';
 import 'package:service_pro_user/UI/login_signup/login_screen.dart';
 import 'package:service_pro_user/UI/settings/widgets/active_status.dart';
@@ -23,10 +24,15 @@ import 'package:service_pro_user/UI/settings/widgets/change_password.dart';
 import 'package:service_pro_user/UI/settings/widgets/delete_account.dart';
 import 'package:service_pro_user/UI/splash_screen/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:khalti/khalti.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferences.getInstance();
+  await Khalti.init(
+    publicKey: 'test_public_key_dc74e0fd57cb46cd93832aee0a507256',
+    enabledDebugging: false,
+  );
   runApp(const MyApp());
 }
 
@@ -68,6 +74,7 @@ class _MyAppState extends State<MyApp> {
           '/': (context) => SplashScreen(),
           '/dashboard': (context) => const NavigatorScaffold(),
           '/login': (context) => const LoginScreen(),
+          '/booking': (context) => const Booking(),
           '/forgotPassword': (context) => const ForgotPasswordScreen(),
           '/active_status': (context) => const ActiveStatus(),
           '/change_password': (context) => const ChangePasswordScreen(),

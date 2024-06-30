@@ -41,7 +41,7 @@ class _ServiceState extends State<Service> {
             ],
           ),
         ),
-        child: services == null
+        child: services == null || services.isEmpty
             ? const Center(
                 child: Text(
                   'No services found',
@@ -58,7 +58,12 @@ class _ServiceState extends State<Service> {
                     const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   final serviceData = services[index];
-                  print('serviceData: $serviceData');
+
+                  // Check if service is active (not false)
+                  if (serviceData['Active'] == false) {
+                    return SizedBox.shrink(); // Skip inactive services
+                  }
+
                   String image = serviceData['Image'].toString();
                   image = image.replaceFirst('localhost', '20.52.185.247');
                   return Card(

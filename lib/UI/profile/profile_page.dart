@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/user_provider/profile_provider.dart';
@@ -35,13 +36,9 @@ class _ProfilePageState extends State<ProfilePage> {
         final email = user['Email'] ?? 'nomail@gmail.com';
         final phone = user['PhoneNo'].toString() ?? '0000000000';
         final address = user['Address'] ?? 'Invalid Address';
-        final profilePicList = user['Image'] ??
-            [
-              'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048'
-            ];
-        final profilePic = profilePicList is List && profilePicList.isNotEmpty
-            ? profilePicList[0]
-            : 'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048';
+        final profilePic = user['ProfileImg'] ??
+            'https://dudewipes.com/cdn/shop/articles/gigachad.jpg?v=1667928905&width=2048';
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -71,7 +68,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   left: MediaQuery.of(context).size.width / 2 - 50,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(profilePic.toString()),
+                    backgroundImage:
+                        CachedNetworkImageProvider(profilePic.toString()),
                   ),
                 ),
               ],

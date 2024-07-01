@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:service_pro_user/Provider/login_signup_provider/login_logout_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -87,6 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
+        print('messages: ${data}');
         var newMessages = data['data'] as List<dynamic>;
 
         setState(() {
@@ -94,6 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
             return {
               'sender': message['status'] == 'sender' ? 'sender' : 'receiver',
               'message': message['message'],
+              'createdAt': message['createdAt'] ?? '',
             };
           }).toList();
           _scrollToBottom();
@@ -112,8 +115,9 @@ class _ChatScreenState extends State<ChatScreen> {
         'receiverId': widget.providerId,
         'message': _controller.text,
         'sender': 'sender',
-        'createdAt': DateTime.now().toString(),
+        'createdAt': DateFormat('yyyy-MM-ddTHH:mm:ss').format(DateTime.now()),
       };
+      print('Sending message: $message');
       socket.emit('message', message);
       setState(() {
         messages.add(message);
@@ -178,6 +182,11 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
+                final String formattedTime = DateFormat('MMM d h:mm a').format(
+                  DateTime.parse(message['createdAt'])
+                      .toUtc()
+                      .add(Duration(hours: 5, minutes: 45)),
+                );
                 final isSentByMe = message['sender'] == 'sender';
                 return Align(
                   alignment:
@@ -190,11 +199,23 @@ class _ChatScreenState extends State<ChatScreen> {
                       color: isSentByMe ? primaryColor : Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                      message['message'],
-                      style: TextStyle(
-                        color: isSentByMe ? Colors.white : Colors.black,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          message['message'],
+                          style: TextStyle(
+                            color: isSentByMe ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        Text(
+                          formattedTime,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isSentByMe ? Colors.white70 : Colors.black54,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );

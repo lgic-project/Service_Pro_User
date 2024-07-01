@@ -10,12 +10,14 @@ class LoginLogoutProvider extends ChangeNotifier {
   String _token = '';
   String _userId = '';
   bool _verified = false;
+  bool _activated = false;
 
   bool get isLoading => _isLoading;
   bool get isLoggedIn => _isLoggedIn;
   String get token => _token;
   String get userId => _userId;
   bool get verified => _verified;
+  bool get activated => _activated;
 
   Future<void> login(String email, String password) async {
     _isLoading = true;
@@ -43,9 +45,10 @@ class LoginLogoutProvider extends ChangeNotifier {
           Map<String, dynamic> decodedToken = JwtDecoder.decode(_token);
           _userId = decodedToken['id']; // Use _userId = '' if _id is null
           _verified = userData['Verified'] == true; // Ensure boolean type
+          _activated = userData['Active'] == true; // Ensure boolean type
 
           if (userData['Role'] == 'user') {
-            await storeToken(_token, _verified);
+            await storeToken(_token, _verified, _activated);
             _isLoggedIn = true;
           } else {
             print('Error: Invalid role');
@@ -80,14 +83,16 @@ class LoginLogoutProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token') ?? '';
     _verified = prefs.getBool('verified') ?? false;
-    _isLoggedIn = _token.isNotEmpty && _verified;
+    _activated = prefs.getBool('activated') ?? false;
+    _isLoggedIn = _token.isNotEmpty && _verified && activated;
 
     notifyListeners();
   }
 
-  Future<void> storeToken(String token, bool verified) async {
+  Future<void> storeToken(String token, bool verified, bool activated) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
     await prefs.setBool('verified', verified);
+    await prefs.setBool('activated', activated);
   }
 }

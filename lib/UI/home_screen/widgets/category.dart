@@ -28,6 +28,7 @@ class Category extends StatefulWidget {
 
 class _CategoryState extends State<Category> {
   TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -140,7 +141,11 @@ class _CategoryState extends State<Category> {
             child: CircularProgressIndicator(),
           );
         } else {
-          final categoryData = categoryProvider.categories;
+          // Filter categories where Active is not false
+          final activeCategoryData = categoryProvider.categories
+              .where((category) => category.active != false)
+              .toList();
+
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -211,14 +216,14 @@ class _CategoryState extends State<Category> {
                 GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: categoryData.length,
+                    itemCount: activeCategoryData.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       mainAxisSpacing: 10,
                     ),
                     itemBuilder: (context, index) {
-                      final categories = categoryData[index];
+                      final categories = activeCategoryData[index];
                       String image = categories.image.toString();
                       image = image.replaceFirst('localhost', '20.52.185.247');
                       return GestureDetector(

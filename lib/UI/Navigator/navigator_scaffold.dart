@@ -9,19 +9,46 @@ import 'package:service_pro_user/UI/profile/profile_page.dart';
 import 'package:service_pro_user/UI/service_providers/service_provider_details.dart';
 
 class NavigatorScaffold extends StatefulWidget {
-  const NavigatorScaffold({super.key});
+  final int initialIndex;
+
+  const NavigatorScaffold({super.key, this.initialIndex = 0});
 
   @override
   State<NavigatorScaffold> createState() => _NavigatorScaffoldState();
 }
 
 class _NavigatorScaffoldState extends State<NavigatorScaffold> {
-  int currentIndex = 0;
+  late int currentIndex;
   Color? unSelectedItemColor = Colors.white;
   Color? selectedItemColor = const Color(0xFF191645);
   late Widget currentBody;
 
   TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.initialIndex;
+    setBodyContent();
+  }
+
+  void setBodyContent() {
+    switch (currentIndex) {
+      case 0:
+        currentBody = const HomeScreen();
+        break;
+      case 1:
+        currentBody = const Chat();
+        break;
+      case 2:
+        currentBody = const Booking();
+        break;
+      case 3:
+        currentBody = ProfilePage();
+        break;
+    }
+  }
+
   String getAppBarTitle() {
     switch (currentIndex) {
       case 0:
@@ -42,20 +69,7 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
     final token = Provider.of<LoginLogoutProvider>(context).token;
     final userProvider = Provider.of<LoginLogoutProvider>(context);
 
-    switch (currentIndex) {
-      case 0:
-        currentBody = const HomeScreen();
-        break;
-      case 1:
-        currentBody = const Chat();
-        break;
-      case 2:
-        currentBody = const Booking();
-        break;
-      case 3:
-        currentBody = ProfilePage();
-        break;
-    }
+    setBodyContent(); // Update the body content whenever the currentIndex changes
 
     return Scaffold(
       extendBody: true,
@@ -303,13 +317,12 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
                               searchServiceData[index]['ServiceAnalytics']
                                       ['CompletedServices']
                                   .toString();
-                          final providerProfile = searchServiceData[index]
-                                      ['Image'] !=
-                                  null
-                              ? searchServiceData[index]['Image'][0].toString()
-                              : null;
-                          ;
-                          if (searchServiceData[index]['Role'] == 'Provider') {
+                          final providerProfile =
+                              searchServiceData[index]['ProfileImg'] ?? '';
+
+                          if (searchServiceData[index]['Role'] != 'user' &&
+                              searchServiceData[index]['Verified'] == true &&
+                              searchServiceData[index]['Active'] == true) {
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -361,7 +374,6 @@ class _NavigatorScaffoldState extends State<NavigatorScaffold> {
                               ),
                             );
                           } else {}
-                          return null;
                         },
                       ),
               ),

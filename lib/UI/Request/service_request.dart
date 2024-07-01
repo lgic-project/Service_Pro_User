@@ -9,6 +9,8 @@ import 'package:service_pro_user/Provider/login_signup_provider/login_logout_pro
 import 'package:service_pro_user/Provider/serviceRequest_provider/get_service_request_provider.dart';
 import 'package:service_pro_user/Provider/serviceRequest_provider/serviceRequest_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:service_pro_user/UI/Navigator/navigator_scaffold.dart';
+import 'package:service_pro_user/UI/Request/booking.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ServiceRequest extends StatefulWidget {
@@ -153,18 +155,26 @@ class _ServiceRequestState extends State<ServiceRequest> {
       } else {
         Provider.of<ServiceRequestProvider>(context, listen: false)
             .sendServiceRequest(
-          context,
-          userId,
-          widget.providerId,
-          widget.serviceData['_id'],
-          imageUploadUrl,
-          selectedDateTime.toString(),
-        );
-
+              context,
+              userId,
+              widget.providerId,
+              widget.serviceData['_id'],
+              imageUploadUrl,
+              selectedDateTime.toString(),
+            )
+            .then(
+              (value) => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NavigatorScaffold(initialIndex: 2),
+                ),
+              ),
+            );
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              backgroundColor: Colors.green,
-              content: Text('Service request submitted successfully.')),
+            backgroundColor: Colors.green,
+            content: Text('Service request submitted successfully.'),
+          ),
         );
       }
     } else {

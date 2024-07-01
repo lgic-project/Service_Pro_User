@@ -6,6 +6,7 @@ class ServiceModel {
   String? updatedAt;
   String? duration;
   int? price;
+  bool? active;
 
   ServiceModel({
     this.id,
@@ -15,6 +16,7 @@ class ServiceModel {
     this.updatedAt,
     this.duration,
     this.price,
+    this.active,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class ServiceModel {
       updatedAt: json['updatedAt'],
       duration: json['Duration'],
       price: json['Price'],
+      active: json['Active'],
     );
   }
 
@@ -38,6 +41,7 @@ class ServiceModel {
       'updatedAt': updatedAt,
       'Duration': duration,
       'Price': price,
+      'Active': active,
     };
   }
 }

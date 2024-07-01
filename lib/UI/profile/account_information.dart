@@ -46,7 +46,8 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
     _emailController = TextEditingController(text: widget.email);
     _phoneController = TextEditingController(text: widget.phone.toString());
     _addressController = TextEditingController(text: widget.address);
-    _nameController.addListener(_onDataChanged);
+    _nameController.addListener(
+        _onDataChanged); //name controller ma kei change vayo vani receive garxa
     _emailController.addListener(_onDataChanged);
     _phoneController.addListener(_onDataChanged);
     _addressController.addListener(_onDataChanged);
@@ -63,7 +64,8 @@ class _AccountInformationPageState extends State<AccountInformationPage> {
 
   void _onDataChanged() {
     setState(() {
-      _isDataChanged = true;
+      _isDataChanged =
+          true; //data change vayo vani true hunxa abi true vasei data update gardinxa
     });
   }
 
